@@ -1,116 +1,137 @@
 import React from 'react';
 import {
-  Card, CardContent, Typography, Grid, Paper, List, ListItem, ListItemText, 
-  Divider, Box, Avatar, Table, TableBody, TableCell, TableContainer, 
-  TableHead, TableRow, Chip
+  Box, Typography, Grid, Paper, InputBase, Avatar, Badge, Fab
 } from '@mui/material';
 import {
-  Package, DollarSign, ArchiveX, Laptop, Keyboard, Mouse, Monitor, Camera
+  Search, Bell, Sliders, Briefcase, ShoppingCart, Truck, Users, BarChart, PieChart, CreditCard, Settings, Plus
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { LineChart, Line, ResponsiveContainer } from 'recharts';
 
-const mockInventory = [
-  { id: 1, name: 'Laptop', quantity: 10, price: 1200, category: 'Electronics', icon: <Laptop size={20} /> },
-  { id: 2, name: 'Keyboard', quantity: 25, price: 75, category: 'Peripherals', icon: <Keyboard size={20} /> },
-  { id: 3, name: 'Mouse', quantity: 50, price: 25, category: 'Peripherals', icon: <Mouse size={20} /> },
-  { id: 4, name: 'Monitor', quantity: 5, price: 300, category: 'Displays', icon: <Monitor size={20} /> },
-  { id: 5, name: 'Webcam', quantity: 15, price: 50, category: 'Peripherals', icon: <Camera size={20} /> },
+const salesData = [
+  { name: 'Week 1', sales: 4000 },
+  { name: 'Week 2', sales: 3000 },
+  { name: 'Week 3', sales: 5000 },
+  { name: 'Week 4', sales: 4500 },
 ];
 
-const recentActivity = [
-  { id: 1, user: 'Admin', action: 'added', itemName: 'Docking Station', time: '2 hours ago' },
-  { id: 2, user: 'Admin', action: 'updated', itemName: 'Laptop', time: '5 hours ago' },
-  { id: 3, user: 'Admin', action: 'deleted', itemName: 'Old Printer', time: '1 day ago' },
+const mockProducts = [
+  { id: 1, name: 'Wireless Mouse', sku: 'WM-1024', quantity: 42, price: 25.99, image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?q=80&w=2600&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', status: 'in-stock' },
+  { id: 2, name: 'Mechanical Keyboard', sku: 'MK-87', quantity: 8, price: 129.50, image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', status: 'low-stock' },
+  { id: 3, name: '4K Monitor', sku: '4KM-27-01', quantity: 0, price: 499.00, image: 'https://images.unsplash.com/photo-1586210579191-30b4a3541465?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', status: 'out-of-stock' },
+  { id: 4, name: 'Webcam Pro', sku: 'WCP-1080', quantity: 15, price: 89.99, image: 'https://images.unsplash.com/photo-1609346938925-6d9b9d2ise8?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', status: 'in-stock' },
 ];
 
-const StatCard = ({ title, value, icon, color }: { title: string, value: string | number, icon: React.ReactNode, color: string }) => (
-  <Card component={motion.div} whileHover={{ y: -5, boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }} sx={{ display: 'flex', alignItems: 'center', p: 3, borderRadius: 4, height: '100%' }}>
-    <Avatar sx={{ bgcolor: color, width: 56, height: 56, mr: 2, borderRadius: 3 }}>
-      {icon}
-    </Avatar>
-    <Box>
-      <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>{title}</Typography>
-      <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'text.primary' }}>{value}</Typography>
-    </Box>
-  </Card>
+const QuickActionCard = ({ icon, text }: { icon: React.ReactNode, text: string }) => (
+  <Grid item xs={6} sm={3}>
+    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+      <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 100 }}>
+        {icon}
+        <Typography variant="body2" sx={{ mt: 1, fontWeight: 500 }}>{text}</Typography>
+      </Paper>
+    </motion.div>
+  </Grid>
 );
 
-const Dashboard = () => {
-  const totalItems = mockInventory.reduce((sum, item) => sum + item.quantity, 0);
-  const totalValue = mockInventory.reduce((sum, item) => sum + item.quantity * item.price, 0);
-  const lowStockItemsCount = mockInventory.filter(item => item.quantity < 20).length;
+const ProductCard = ({ product }: { product: typeof mockProducts[0] }) => {
+  const getStatusChip = (status: string) => {
+    switch (status) {
+      case 'in-stock':
+        return <Box sx={{ px: 1, py: 0.5, bgcolor: '#D1FAE5', color: '#065F46', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 500 }}>In Stock</Box>;
+      case 'low-stock':
+        return <Box sx={{ px: 1, py: 0.5, bgcolor: '#FEF3C7', color: '#92400E', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 500 }}>Low Stock</Box>;
+      case 'out-of-stock':
+        return <Box sx={{ px: 1, py: 0.5, bgcolor: '#FEE2E2', color: '#991B1B', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 500 }}>Out of Stock</Box>;
+      default: return null;
+    }
+  }
 
   return (
-    <Grid container spacing={3}>
-      {/* Stat Cards */}
-      <Grid item xs={12} sm={6} md={4}>
-        <StatCard title="Total Items" value={totalItems} icon={<Package />} color="#E0F2FE" />
-      </Grid>
-      <Grid item xs={12} sm={6} md={4}>
-        <StatCard title="Inventory Value" value={`$${totalValue.toLocaleString()}`} icon={<DollarSign />} color="#D1FAE5" />
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <StatCard title="Low on Stock" value={lowStockItemsCount} icon={<ArchiveX />} color="#FEF2F2" />
-      </Grid>
-
-      {/* Full Inventory Overview */}
-      <Grid item xs={12} lg={8}>
-        <Paper sx={{ borderRadius: 4, overflow: 'hidden' }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'text.primary', mb: 2 }}>Full Inventory Overview</Typography>
-            <TableContainer>
-              <Table size="medium">
-                <TableHead>
-                  <TableRow sx={{ '& .MuiTableCell-root': { borderBottom: 'none', bgcolor: '#F9FAFB', fontWeight: 600, color: 'text.secondary', textTransform: 'uppercase', fontSize: '0.75rem' } }}>
-                    <TableCell>Item</TableCell>
-                    <TableCell>Category</TableCell>
-                    <TableCell align="right">Quantity</TableCell>
-                    <TableCell align="right">Price</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {mockInventory.map(item => (
-                    <TableRow key={item.id} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                      <TableCell>
-                        <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.primary' }}>
-                          <Avatar sx={{ bgcolor: '#F3F4F6', color: '#4B5563', width: 40, height: 40, borderRadius: 2, mr: 2 }}>{item.icon}</Avatar>
-                          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{item.name}</Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell><Chip label={item.category} size="small" sx={{ bgcolor: '#EFF6FF', color: '#3B82F6', fontWeight: 500 }} /></TableCell>
-                      <TableCell align="right" sx={{ color: 'text.secondary', fontWeight: 500 }}>{item.quantity}</TableCell>
-                      <TableCell align="right" sx={{ fontWeight: 600, color: 'text.primary' }}>{`$${item.price.toLocaleString()}`}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </CardContent>
+    <Grid item xs={6}>
+      <motion.div whileHover={{ y: -5 }}>
+        <Paper sx={{ overflow: 'hidden' }}>
+          <img src={product.image} alt={product.name} style={{ width: '100%', height: 100, objectFit: 'cover' }} />
+          <Box sx={{ p: 2 }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600, color: 'text.primary' }}>{product.name}</Typography>
+            <Typography variant="caption" sx={{ color: 'text.secondary' }}>SKU: {product.sku}</Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+              <Typography variant="body2" sx={{ fontWeight: 600, color: 'text.primary' }}>{`$${product.price.toFixed(2)}`}</Typography>
+              {getStatusChip(product.status)}
+            </Box>
+          </Box>
         </Paper>
-      </Grid>
-
-      {/* Recent Activity */}
-      <Grid item xs={12} lg={4}>
-        <Paper sx={{ borderRadius: 4, height: '100%' }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'text.primary', mb: 2 }}>Recent Activity</Typography>
-            <List disablePadding>
-              {recentActivity.map((activity, index) => (
-                <React.Fragment key={activity.id}>
-                  <ListItem disablePadding sx={{ py: 1.5 }}>
-                    <ListItemText
-                      primary={<Typography variant='subtitle2' sx={{ fontWeight: 600 }}>{`${activity.itemName} ${activity.action}`}</Typography>}
-                      secondary={`by ${activity.user} • ${activity.time}`}
-                    />
-                  </ListItem>
-                  {index < recentActivity.length - 1 && <Divider />}
-                </React.Fragment>
-              ))}
-            </List>
-          </CardContent>
-        </Paper>
-      </Grid>
+      </motion.div>
     </Grid>
+  )
+}
+
+const Dashboard = () => {
+  return (
+    <Box sx={{ px: '20px', pb: '20px' }}>
+      {/* Header */}
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', my: '16px' }}>
+        <Paper component="form" sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', flex: 1, borderRadius: '18px', height: '56px' }}>
+          <InputBase sx={{ ml: 1, flex: 1 }} placeholder="Search products, invoices, suppliers..." />
+          <Sliders size={20} style={{ margin: '0 10px', color: '#6B7280' }}/>
+        </Paper>
+        <Badge badgeContent={4} color="primary" sx={{ mx: 2}}>
+          <Bell size={24} color="#6B7280" />
+        </Badge>
+        <Avatar alt="User" src="https://i.pravatar.cc/300" />
+      </Box>
+
+      {/* Dashboard Summary */}
+      <Paper sx={{
+        p: 3, mb: 3,
+        background: 'linear-gradient(135deg, #2563EB 0%, #5983EE 100%)',
+        color: 'white', height: '170px',
+        display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
+      }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <Box>
+            <Typography variant="h6">Good Morning, Phoenix 👋</Typography>
+            <Typography variant="body2">Total Inventory Value</Typography>
+            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>₦12,580,000</Typography>
+          </Box>
+          <Box sx={{ textAlign: 'right' }}>
+             <Typography variant="body2">This Month Sales</Typography>
+            <Typography variant="h6" sx={{ color: '#A7F3D0' }}>+18%</Typography>
+             <ResponsiveContainer width={100} height={40}>
+               <LineChart data={salesData}>
+                 <Line type="monotone" dataKey="sales" stroke="#A7F3D0" strokeWidth={2} dot={false} />
+               </LineChart>
+             </ResponsiveContainer>
+          </Box>
+        </Box>
+      </Paper>
+
+      {/* Quick Actions */}
+      <Grid container spacing={2} sx={{ mb: 3 }}>
+        <QuickActionCard icon={<Briefcase color="#2563EB" />} text="Products" />
+        <QuickActionCard icon={<ShoppingCart color="#16A34A" />} text="Sales" />
+        <QuickActionCard icon={<Truck color="#F97316" />} text="Purchases" />
+        <QuickActionCard icon={<Users color="#8B5CF6" />} text="Suppliers" />
+        <QuickActionCard icon={<BarChart color="#3B82F6" />} text="Reports" />
+        <QuickActionCard icon={<PieChart color="#EC4899" />} text="Analytics" />
+        <QuickActionCard icon={<CreditCard color="#F59E0B" />} text="Expenses" />
+        <QuickActionCard icon={<Settings color="#6B7280" />} text="Settings" />
+      </Grid>
+
+      {/* Inventory Section */}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Inventory</Typography>
+        <Typography variant="body2" sx={{ color: 'primary.main', fontWeight: 500 }}>See All</Typography>
+      </Box>
+      <Grid container spacing={2}>
+        {mockProducts.map(p => <ProductCard key={p.id} product={p} />)}
+      </Grid>
+
+      {/* FAB */}
+      <Fab color="primary" aria-label="add" sx={{ position: 'fixed', bottom: 88, right: 20 }}>
+        <Plus />
+      </Fab>
+
+    </Box>
   );
 };
 

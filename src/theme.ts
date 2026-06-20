@@ -6,40 +6,23 @@ const theme = createTheme({
     primary: {
       main: '#2563EB',
     },
-    secondary: {
-      main: '#4B5563', // A neutral secondary color
-    },
     success: {
-      main: '#10B981',
+      main: '#16A34A',
     },
-    warning: {
-      main: '#F59E0B',
-    },
-    error: {
-      main: '#EF4444',
+    secondary: {
+      main: '#F97316',
     },
     background: {
-      default: '#F8FAFC',
+      default: '#F8F9FB',
       paper: '#FFFFFF',
     },
     text: {
-      primary: '#1F2937',
+      primary: '#111827',
       secondary: '#6B7280',
     },
   },
   typography: {
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
+    fontFamily: 'Inter, sans-serif',
     h1: {
       fontSize: '2.5rem',
       fontWeight: 700,
@@ -76,34 +59,30 @@ const theme = createTheme({
     },
   },
   shape: {
-    borderRadius: 16,
+    borderRadius: 18, // Updated for soft rounded corners
   },
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
-          padding: '10px 20px',
+          borderRadius: 18, // Consistent with global shape
+          padding: '12px 24px',
+          boxShadow: '0 4px 12px 0 rgba(37, 99, 235, 0.25)',
         },
-        contained: {
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-            '&:hover': {
-                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-            },
-        }
       },
     },
     MuiPaper: {
       styleOverrides: {
         root: {
           backgroundImage: 'none',
+          borderRadius: 18,
         },
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 20,
+          borderRadius: 18,
           boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.05)',
         },
       },
@@ -112,7 +91,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: '#FFFFFF',
-          color: '#1F2937',
+          color: '#111827',
           boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
         },
       },

@@ -13,7 +13,7 @@ const Login = () => {
     e.preventDefault();
     // Here you would typically handle the login logic
     // For now, we will just navigate to the dashboard
-    navigate('/app/dashboard');
+    navigate('/dashboard');
   };
 
   return (

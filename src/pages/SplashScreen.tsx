@@ -10,7 +10,7 @@ const SplashScreen = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       navigate('/login');
-    }, 3000);
+    }, 1500);
 
     return () => clearTimeout(timer);
   }, [navigate]);
@@ -23,26 +23,21 @@ const SplashScreen = () => {
         alignItems: 'center',
         justifyContent: 'center',
         height: '100vh',
-        backgroundColor: 'background.default',
+        backgroundColor: '#F8F9FA',
       }}
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
       >
-        <InventoryIcon sx={{ fontSize: 100, color: 'primary.main' }} />
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <InventoryIcon sx={{ fontSize: 48, color: 'primary.main', mr: 2 }} />
+          <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
+            Inventory
+          </Typography>
+        </Box>
       </motion.div>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-      >
-        <Typography variant="h2" component="h1" sx={{ mt: 3, color: 'text.primary' }}>
-          Inventory Management
-        </Typography>
-      </motion.div>
-      <CircularProgress sx={{ mt: 4, color: 'primary.main' }} />
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
