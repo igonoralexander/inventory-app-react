@@ -1,135 +1,106 @@
 import { Outlet, useLocation, NavLink } from 'react-router-dom';
-import { Box, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, AppBar, Toolbar, Typography, CssBaseline } from '@mui/material';
-import { LayoutGrid, DollarSign, Package, BarChart2, Settings, LogOut } from 'lucide-react';
+import { Box, Typography, CssBaseline, useTheme, useMediaQuery, Avatar, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
+import { LogOut, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 import BottomNavigation from './BottomNavigation';
 
-const drawerWidth = 260;
+const sidebarWidth = 240;
 
-const navItems = [
-  { text: 'Dashboard', icon: <LayoutGrid size={20} />, path: '/dashboard' },
-  { text: 'Sales', icon: <DollarSign size={20} />, path: '/sales' },
-  { text: 'Products', icon: <Package size={20} />, path: '/inventory' },
-  { text: 'Reports', icon: <BarChart2 size={20} />, path: '/reports' },
-  { text: 'Settings', icon: <Settings size={20} />, path: '/settings' },
-];
+const Sidebar = () => (
+    <Box
+        sx={{
+            width: sidebarWidth,
+            flexShrink: 0,
+            bgcolor: 'background.paper',
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            borderRight: '1px solid #E2E8F0'
+        }}
+    >
+        <Box sx={{ p: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', height: 64, borderBottom: '1px solid #E2E8F0' }}>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                InventoryPro
+            </Typography>
+        </Box>
+        <Box sx={{ flexGrow: 1, p: 2 }}>
+            {/* This space is intentionally left blank to push the user profile section to the bottom */}
+        </Box>
+        <Box sx={{ p: 2, borderTop: '1px solid #E2E8F0' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', p: 1.5, borderRadius: 2, '&:hover': {backgroundColor: '#F8F9FA'} }}>
+                <Avatar src="https://i.pravatar.cc/300" sx={{ width: 40, height: 40 }} />
+                <Box sx={{ ml: 1.5, flexGrow: 1 }}>
+                    <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>Phoenix</Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>Admin</Typography>
+                </Box>
+                <ChevronDown size={20} color="#64748B" />
+            </Box>
+             <ListItem disablePadding sx={{mt: 1}}>
+                <ListItemButton component={NavLink} to="/login" sx={{ borderRadius: 2, color: 'text.secondary', height: 56 }}>
+                    <ListItemIcon sx={{ minWidth: 40 }}><LogOut size={20} /></ListItemIcon>
+                    <ListItemText primary="Logout" primaryTypographyProps={{ fontWeight: 500 }}/>
+                </ListItemButton>
+            </ListItem>
+        </Box>
+    </Box>
+);
 
 const Layout = () => {
     const location = useLocation();
+    const theme = useTheme();
+    const isDesktop = useMediaQuery(theme.breakpoints.up('lg'));
 
-    const pageTitleMapping = {
-        '/dashboard': 'Dashboard',
-        '/sales': 'Sales',
-        '/inventory': 'Products',
-        '/reports': 'Reports',
-        '/settings': 'Settings',
-        '/more': 'More',
-    };
-
-    const pageTitle = pageTitleMapping[location.pathname] || 'Dashboard';
+    if (!isDesktop) {
+        return (
+             <Box sx={{ bgcolor: '#F8F9FA', minHeight: '100vh', pb: '80px' }}>
+                <Box sx={{ p: { xs: 2, sm: 3 } }}>
+                    <Outlet />
+                </Box>
+                <BottomNavigation />
+            </Box>
+        )
+    }
 
     return (
-        <Box sx={{ display: 'flex', bgcolor: '#F8F9FA' }}>
+        <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
             <CssBaseline />
-            <AppBar
-                position="fixed"
-                sx={{
-                    width: { md: `calc(100% - ${drawerWidth}px)` },
-                    ml: { md: `${drawerWidth}px` },
-                    boxShadow: 'none',
-                    borderBottom: '1px solid #E2E8F0',
-                    bgcolor: '#FFFFFF',
-                    display: { xs: 'block', md: 'block' } 
-                }}
-            >
-                <Toolbar>
-                    <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 600, color: '#1E293B' }}>
-                        {pageTitle}
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-            <Drawer
-                variant="permanent"
-                sx={{
-                    display: { xs: 'none', md: 'block' },
-                    width: drawerWidth,
-                    flexShrink: 0,
-                    [`& .MuiDrawer-paper`]: { 
-                        width: drawerWidth, 
-                        boxSizing: 'border-box',
-                        borderRight: 'none',
-                        backgroundColor: '#FFFFFF',
-                    },
-                }}
-            >
-                <Toolbar sx={{ height: 64, borderBottom: '1px solid #E2E8F0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold', color: 'primary.main', letterSpacing: '0.5px' }}>
-                        InventoryPro
-                    </Typography>
-                </Toolbar>
-                <Box sx={{ overflow: 'auto', p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
-                    <List sx={{ flexGrow: 1, pt: 2 }}>
-                        {navItems.map((item) => (
-                            <ListItem key={item.text} disablePadding sx={{ mb: 1 }}>
-                                <ListItemButton
-                                    component={NavLink}
-                                    to={item.path}
-                                    sx={{
-                                        borderRadius: 2,
-                                        color: '#475569',
-                                        '&.active': {
-                                            backgroundColor: 'primary.main',
-                                            color: 'primary.contrastText',
-                                            boxShadow: '0 4px 12px 0 rgba(37, 99, 235, 0.25)',
-                                            '& .MuiListItemIcon-root': {
-                                                color: 'primary.contrastText',
-                                            },
-                                            '&:hover': {
-                                                backgroundColor: 'primary.dark',
-                                            }
-                                        },
-                                        '&:hover': {
-                                            backgroundColor: '#F1F5F9',
-                                        },
-                                        transition: 'background-color 0.3s, color 0.3s',
-                                        py: 1.5,
-                                    }}
-                                >
-                                    <ListItemIcon sx={{ minWidth: 40, color: 'inherit' }}>{item.icon}</ListItemIcon>
-                                    <ListItemText primary={item.text} primaryTypographyProps={{ fontWeight: 500 }} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
-                    </List>
-                    <Box sx={{ pb: 2}}>
-                        <ListItem disablePadding>
-                            <ListItemButton component={NavLink} to="/login" sx={{ borderRadius: 2, color: '#475569', '&:hover': { backgroundColor: '#F1F5F9'} }}>
-                                <ListItemIcon sx={{ minWidth: 40 }}><LogOut size={20} /></ListItemIcon>
-                                <ListItemText primary="Logout" primaryTypographyProps={{ fontWeight: 500 }}/>
-                            </ListItemButton>
-                        </ListItem>
+            {/* This container wraps the app shell and provides spacing */}
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                p: 4,
+                pb: '88px', // Added extra padding here: 64px (nav) + 24px (gap)
+            }}>
+                {/* The Centered Application Shell */}
+                <Box
+                    sx={{
+                        width: '100%',
+                        maxWidth: '1280px',
+                        minHeight: 'calc(100vh - 32px - 88px)', // Adjusted min-height
+                        borderRadius: '24px',
+                        bgcolor: 'background.paper',
+                        boxShadow: '0 20px 50px -10px rgba(0, 0, 0, 0.1)',
+                        display: 'flex',
+                        overflow: 'hidden',
+                    }}
+                >
+                    <Sidebar />
+                    <Box component="main" sx={{ 
+                        flexGrow: 1, 
+                        overflowY: 'auto',
+                        bgcolor: '#F8F9FB',
+                        p: 4,
+                    }}>
+                         <motion.div
+                            key={location.pathname}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.4, ease: 'easeOut' }}
+                        >
+                            <Outlet />
+                        </motion.div>
                     </Box>
                 </Box>
-            </Drawer>
-            <Box
-                component="main"
-                sx={{
-                    flexGrow: 1, 
-                    p: { xs: 2, sm: 3, md: 4 }, 
-                    width: { sm: `calc(100% - ${drawerWidth}px)` }, 
-                    minHeight: '100vh',
-                    pb: { xs: '80px', md: 4 }
-                }}
-            >
-                <Toolbar />
-                <motion.div
-                    key={location.pathname}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, ease: 'easeOut' }}
-                >
-                    <Outlet />
-                </motion.div>
             </Box>
             <BottomNavigation />
         </Box>

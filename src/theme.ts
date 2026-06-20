@@ -2,107 +2,39 @@ import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
-    mode: 'light',
     primary: {
       main: '#2563EB',
     },
-    success: {
-      main: '#16A34A',
-    },
-    secondary: {
-      main: '#F97316',
-    },
     background: {
-      default: '#F8F9FB',
+      default: '#F3F4F6', // A very subtle gray for the page background
       paper: '#FFFFFF',
     },
     text: {
-      primary: '#111827',
-      secondary: '#6B7280',
-    },
+        primary: '#1E293B',
+        secondary: '#64748B',
+    }
   },
   typography: {
     fontFamily: 'Inter, sans-serif',
-    h1: {
-      fontSize: '2.5rem',
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-    h2: {
-      fontSize: '2rem',
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-    h3: {
-      fontSize: '1.75rem',
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-    h4: {
-      fontSize: '1.5rem',
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-    h5: {
-      fontSize: '1.25rem',
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-    h6: {
-      fontSize: '1rem',
-      fontWeight: 700,
-      lineHeight: 1.2,
-    },
-    button: {
-      textTransform: 'none',
-      fontWeight: 600,
-    },
-  },
-  shape: {
-    borderRadius: 18, // Updated for soft rounded corners
+    h4: { fontWeight: 700, color: '#1E293B' },
+    h5: { fontWeight: 600, color: '#1E293B' },
+    h6: { fontWeight: 600, color: '#1E293B' },
   },
   components: {
-    MuiButton: {
+    MuiCssBaseline: {
       styleOverrides: {
-        root: {
-          borderRadius: 18, // Consistent with global shape
-          padding: '12px 24px',
-          boxShadow: '0 4px 12px 0 rgba(37, 99, 235, 0.25)',
+        body: {
+          backgroundColor: '#F3F4F6',
+          '&::-webkit-scrollbar, & *::-webkit-scrollbar': {
+            display: 'none',
+          },
+          '&, & * ': {
+            scrollbarWidth: 'none',
+            'ms-overflow-style': 'none',
+          },
         },
       },
     },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          backgroundImage: 'none',
-          borderRadius: 18,
-        },
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: {
-          borderRadius: 18,
-          boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.05)',
-        },
-      },
-    },
-    MuiAppBar: {
-      styleOverrides: {
-        root: {
-          backgroundColor: '#FFFFFF',
-          color: '#111827',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
-        },
-      },
-    },
-    MuiDrawer: {
-        styleOverrides: {
-            paper: {
-                border: 'none',
-            }
-        }
-    }
   },
 });
 

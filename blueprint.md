@@ -1,108 +1,71 @@
 # Inventory Management Application Blueprint
 
-## Overview
+## Version 2.0: The Premium Desktop Refinement
 
-This document outlines the design and development plan for a professional business inventory application. The goal is to create a modern, minimal, and premium SaaS dashboard experience for mobile devices, focusing on usability, readability, and fast navigation for shop owners.
-
----
-
-## Overall Style
-
-*   **Aesthetic:** Modern, minimal, premium SaaS dashboard.
-*   **Corners:** Soft rounded corners throughout the interface.
-*   **Layout:** Spacious with generous white space.
-*   **Spacing:** 8-point spacing system.
-*   **Typography:** Clean with a clear visual hierarchy.
-*   **Inspiration:** Material Design 3 / Apple Human Interface.
-*   **Shadows:** Smooth shadows with subtle elevation.
-*   **Responsiveness:** Fully responsive for all mobile devices.
+This document outlines the design and development plan for a professional business inventory application. The goal is to create a modern, minimal, and premium SaaS dashboard experience that feels like a native application on all devices.
 
 ---
 
-## Color Palette
+## Layout Philosophy: Centered & Focused
 
-*   **Primary Blue:** `#2563EB`
-*   **Success Green:** `#16A34A`
-*   **Accent Orange:** `#F97316`
-*   **Background:** `#F8F9FB`
-*   **Cards:** `White (#FFFFFF)`
-*   **Primary Text:** `#111827`
-*   **Secondary Text:** `#6B7280`
-*   **Border:** `#E5E7EB`
+The application avoids a traditional, full-width layout. Instead, it is presented as a centered, fixed-width application shell on desktop, creating a focused, elegant, and app-like experience. The browser chrome simply frames the application.
 
-**Usage:** Blue is the dominant brand color. Green is for stock and success indicators. Orange is reserved for highlights, notifications, and call-to-action buttons.
+### Page Background
 
----
+*   **Color:** A subtle, light gray (`#F3F4F6`) provides a neutral backdrop that adds depth and helps the application shell stand out without needing harsh borders.
 
-## Screen Margins & Layout
+### Parent Application Container
 
-*   **Horizontal Padding:** 20px on left and right.
-*   **Top Spacing:** 16px after the status bar.
-*   **Bottom Safe Area:** 20px.
-*   **Alignment:** Consistent alignment across all sections.
+*   **Layout:** Centered horizontally with `margin: 0 auto`.
+*   **Max Width:** `1280px`.
+*   **Appearance:**
+    *   **Background:** Clean white (`#FFFFFF`) or a very light off-white (`#F8F9FB`) for the content area.
+    *   **Border Radius:** `24px`.
+    *   **Shadow:** A soft, multi-layered shadow to lift the application off the page.
+    *   **Borders:** No visible borders or dark outlines.
+*   **Scrolling:** Scrollbars are hidden to maintain a clean, native-app feel.
 
 ---
 
-## Key Components & Screens
+## Navigation Strategy: Mobile First, Desktop Polished
 
-### Status Bar & Header
+The application utilizes a single, consistent navigation pattern across all devices. The floating bottom navigation is the primary method for moving between the main sections of the app.
 
-*   **Safe Area:** Respect the device's native safe area for the status bar.
-*   **Header Section:** Below the status bar, include:
-    *   A full-width rounded search field (56px height, 18px radius) with placeholder: "Search products, invoices, suppliers..."
-    *   Notification bell icon.
-    *   Filter button.
-    *   User avatar.
+### Primary Navigation (Bottom)
 
-### Dashboard
+*   **Component:** `BottomNavigation`
+*   **Visibility:** Persistently visible on both mobile and desktop.
+*   **Desktop Appearance:**
+    *   **Position:** Floats inside the application shell, fixed to the bottom center.
+    *   **Width:** Approximately `700px`.
+    *   **Height:** `72px`.
+    *   **Styling:** White background, `24px` radius, and a soft shadow.
 
-*   **Dashboard Summary Card:**
-    *   Replace the advertisement banner with a summary card.
-    *   **Height:** ~170px.
-    *   **Background:** Blue gradient with subtle abstract shapes.
-    *   **Content:**
-        *   "Good Morning, Phoenix 👋"
-        *   "Total Inventory Value"
-        *   "₦12,580,000"
-        *   Small analytics graph for "This Month Sales" with "+18%" change.
-    *   **Actions:** Quick action buttons for "Add Product" and "Record Sale".
+### Secondary Panel (Left Sidebar)
 
-*   **Quick Actions:**
-    *   A grid of rounded square action cards (18px radius, white background, soft shadow).
-    *   **Actions:** 📦 Products, 🛒 Sales, 🚚 Purchases, 👥 Suppliers, 📊 Reports, 📈 Analytics, 💰 Expenses, ⚙ Settings.
-    *   Each card includes a colored icon and a small label.
+*   **Purpose:** The sidebar is no longer for primary navigation. It serves as a static panel for branding, user account management, workspace switching, and quick actions/shortcuts.
+*   **Width:** `240px`.
+*   **Gap:** `32px` spacing between the sidebar and the main content.
+*   **Alignment:** All items (logo, user info, logout) are perfectly aligned to a single vertical grid with consistent height (`56px`) and padding for a balanced feel.
 
-*   **Inventory Section:**
-    *   **Title:** "Inventory" with a "See All" link.
-    *   **Layout:** Two-column grid of product cards.
-    *   **Product Card:**
-        *   Product Image.
-        *   Product Name, SKU, Quantity, Selling Price.
-        *   Stock Status Badge: "In Stock" (Green), "Low Stock" (Orange), "Out of Stock" (Red).
-        *   Rounded corners, soft shadows, and balanced spacing.
+---
+
+## Content & Interaction
+
+### Main Content Area
+
+*   **Width:** `~900-960px`.
+*   **Layout:** All content sections (Search, Cards, Lists) align to the same left edge and share a consistent width.
+*   **Spacing:** Generous whitespace is used to reduce clutter and improve readability.
 
 ### Floating Action Button (FAB)
 
-*   **Position:** Bottom right corner.
-*   **Style:** Blue circular FAB with a white "+" icon.
-*   **Action:** Add new products.
+*   **Position:** The `+` button is placed `24px` above the floating bottom navigation and `24px` from the right edge of the main content area, ensuring it never overlaps.
 
-### Bottom Navigation
+### Spacing System (8-Point Grid)
 
-*   **Height:** 72px.
-*   **Style:** White background with rounded top corners (24px).
-*   **Icons:** 🏠 Dashboard, 📦 Products, 💳 Sales, 📊 Reports, 👤 Profile.
-*   **Active Tab:** Blue icon and label.
-*   **Inactive Tabs:** Gray icons.
-
----
-
-## Design Rules & Principles
-
-*   Use consistent 20px horizontal margins.
-*   Use 16–24px vertical spacing between sections.
-*   Use rounded corners (16–24px) for all cards and buttons.
-*   Use subtle shadows for depth.
-*   Avoid clutter and maintain a clean, professional appearance.
-*   Prioritize usability and fast navigation for the target user (shop owners).
-*   The final design should feel like a polished mobile business application, combining the visual quality of modern fintech apps with the practicality of inventory management software.
+*   **Container Padding:** `24px`.
+*   **Section Gaps:** `24px`.
+*   **Card Spacing:** `20px`.
+*   **Card Padding:** `16px`.
+*   **Border Radius:** `16px-24px` for a soft, modern look.
