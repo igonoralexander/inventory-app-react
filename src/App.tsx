@@ -3,7 +3,6 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
-import Inventory from './pages/Inventory';
 import Sales from './pages/Sales';
 import Reports from './pages/Reports';
 import More from './pages/More';
@@ -12,6 +11,10 @@ import SplashScreen from './pages/SplashScreen';
 import Login from './pages/Login';
 import Registration from './pages/Registration';
 import theme from './theme';
+import ProductList from './pages/ProductList';
+import AddProduct from './pages/AddProduct';
+import EditProduct from './pages/EditProduct';
+import RecordPurchase from './pages/RecordPurchase';
 
 const App = () => {
   return (
@@ -24,11 +27,15 @@ const App = () => {
           <Route path="/register" element={<Registration />} />
           <Route element={<Layout />}>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/products" element={<ProductList />} />
+            <Route path="/products/add" element={<AddProduct />} />
+            <Route path="/products/edit/:id" element={<EditProduct />} />
+            <Route path="/inventory/record-purchase" element={<RecordPurchase />} />
             <Route path="/sales" element={<Sales />} />
             <Route path="/reports" element={<Reports />} />
             <Route path="/more" element={<More />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/inventory" element={<Navigate to="/products" replace />} />
           </Route>
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

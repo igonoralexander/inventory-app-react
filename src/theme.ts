@@ -3,7 +3,19 @@ import { createTheme } from '@mui/material/styles';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#2563EB',
+      main: '#2563EB', // Blue for primary actions
+    },
+    secondary: {
+      main: '#4B5563', // A neutral gray for secondary actions
+    },
+    success: {
+        main: '#10B981', // Green for success states
+    },
+    warning: {
+        main: '#F59E0B', // Orange for warnings
+    },
+    error: {
+        main: '#EF4444', // Red for errors and destructive actions
     },
     background: {
       default: '#F3F4F6', // A very subtle gray for the page background
@@ -30,7 +42,7 @@ const theme = createTheme({
           },
           '&, & * ': {
             scrollbarWidth: 'none',
-            'ms-overflow-style': 'none',
+            '-ms-overflow-style': 'none',
           },
         },
       },

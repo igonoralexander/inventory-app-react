@@ -1,191 +1,293 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Box, Typography, Grid, Paper, InputBase, Button, AvatarGroup, Avatar, IconButton
+  Box, Typography, Grid, Paper, Avatar, IconButton, useTheme, Skeleton, Button, LinearProgress
 } from '@mui/material';
 import {
-  Search, Sliders, Briefcase, ShoppingCart, ArrowUpRight, ArrowDownRight, MoreHorizontal, ShoppingBag, Edit
+  Archive,
+  AlertTriangle,
+  XCircle,
+  TrendingUp,
+  DollarSign,
+  PlusCircle,
+  ShoppingCart,
+  Truck,
+  FileText,
+  List,
+  ChevronRight,
+  ArrowUp,
+  Box as BoxIcon
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useNavigate } from 'react-router-dom';
 
-const salesData = [
-  { name: 'Mon', Sales: 4000, Purchases: 2400 },
-  { name: 'Tue', Sales: 3000, Purchases: 1398 },
-  { name: 'Wed', Sales: 2000, Purchases: 9800 },
-  { name: 'Thu', Sales: 2780, Purchases: 3908 },
-  { name: 'Fri', Sales: 1890, Purchases: 4800 },
-  { name: 'Sat', Sales: 2390, Purchases: 3800 },
-  { name: 'Sun', Sales: 3490, Purchases: 4300 },
+// MOCK DATA
+const summaryData = [
+    { title: 'Pending Stock Alerts', value: '8', change: '', changeType: 'alert', icon: <AlertTriangle size={24} color="#f97316" />, color: '#f97316', path: '/inventory/low-stock' },
+    { title: 'Total Products', value: '890', icon: <BoxIcon size={24} color="#6366f1" />, color: '#6366f1', path: '/products' },
+    { title: 'Products In Stock', value: '750', icon: <Archive size={24} color="#0ea5e9" />, color: '#0ea5e9', path: '/inventory' },
+    { title: 'Low Stock Items', value: '45', icon: <AlertTriangle size={24} color="#f97316" />, color: '#f97316', path: '/inventory/low-stock' },
+    { title: 'Out of Stock', value: '12', icon: <XCircle size={24} color="#dc2626" />, color: '#dc2626', path: '/inventory/out-of-stock' },
+];
+const salesChartData = [
+    { name: '12 AM', sales: 20000, revenue: 30000 }, { name: '3 AM', sales: 45000, revenue: 80000 },
+    { name: '6 AM', sales: 60000, revenue: 120000 }, { name: '9 AM', sales: 110000, revenue: 200000 },
+    { name: '12 PM', sales: 150000, revenue: 280000 }, { name: '3 PM', sales: 180000, revenue: 350000 },
+    { name: '6 PM', sales: 160000, revenue: 310000 }, { name: '9 PM', sales: 130000, revenue: 260000 },
+];
+const lowStockItems = [
+    { id: 1, name: 'Espresso Machine', image: 'https://images.unsplash.com/photo-1565679905434-a6c62984ca11?q=80&w=2574&auto=format&fit=crop', currentQty: 8, minQty: 10 },
+    { id: 2, name: 'Mechanical Keyboard', image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=2670&auto=format&fit=crop', currentQty: 5, minQty: 10 },
+    { id: 3, name: 'Designer Sneakers', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2670&auto=format&fit=crop', currentQty: 3, minQty: 5 },
+    { id: 4, name: 'Webcam Pro', image: 'https://images.unsplash.com/photo-1609346938925-6d9b9d2be8a8?q=80&w=2670&auto=format&fit=crop', currentQty: 12, minQty: 15 },
+    { id: 5, name: 'Organic Bananas', image: 'https://images.unsplash.com/photo-1571771894824-269f85b83969?q=80&w=2670&auto=format&fit=crop', currentQty: 50, minQty: 100 },
+];
+const recentSales = [
+  { id: 1, time: '2m ago', productName: 'Espresso Machine', qty: 1, amount: '₦250,000', paymentMethod: 'Card' },
+  { id: 2, time: '15m ago', productName: 'Designer Sneakers', qty: 2, amount: '₦180,000', paymentMethod: 'Cash' },
+  { id: 3, time: '30m ago', productName: 'Webcam Pro', qty: 1, amount: '₦45,000', paymentMethod: 'Transfer' },
+  { id: 4, time: '1h ago', productName: 'Mechanical Keyboard', qty: 1, amount: '₦85,000', paymentMethod: 'Card' },
+  { id: 5, time: '2h ago', productName: 'Organic Bananas', qty: 5, amount: '₦5,000', paymentMethod: 'Cash' },
+];
+const topSellingProducts = [
+  { id: 1, name: 'Espresso Machine', image: 'https://images.unsplash.com/photo-1565679905434-a6c62984ca11?q=80&w=2574&auto=format&fit=crop', unitsSold: 120, revenue: '₦3,000,000', popularity: 92 },
+  { id: 2, name: 'Designer Sneakers', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2670&auto=format&fit=crop', unitsSold: 95, revenue: '₦1,710,000', popularity: 85 },
+  { id: 3, name: 'Mechanical Keyboard', image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=2670&auto=format&fit=crop', unitsSold: 80, revenue: '₦680,000', popularity: 78 },
+  { id: 4, name: 'Webcam Pro', image: 'https://images.unsplash.com/photo-1609346938925-6d9b9d2be8a8?q=80&w=2670&auto=format&fit=crop', unitsSold: 72, revenue: '₦3,240,000', popularity: 70 },
+  { id: 5, name: 'Organic Bananas', image: 'https://images.unsplash.com/photo-1571771894824-269f85b83969?q=80&w=2670&auto=format&fit=crop', unitsSold: 500, revenue: '₦250,000', popularity: 65 },
+];
+const recentActivity = [
+  { id: 1, icon: <PlusCircle size={16} />, description: 'New product "Designer Watch" added', time: '5m ago' },
+  { id: 2, icon: <ShoppingCart size={16} />, description: 'Sale recorded for "Espresso Machine" (x1)', time: '12m ago' },
+  { id: 3, icon: <Truck size={16} />, description: 'Stock purchased for "Organic Bananas" (+100 units)', time: '45m ago' },
+  { id: 4, icon: <FileText size={16} />, description: 'Product "Webcam Pro" details updated', time: '1h ago' },
+  { id: 5, icon: <XCircle size={16} />, description: 'Product "Old T-Shirt" deleted', time: '3h ago' },
 ];
 
-const mockProducts = [
-  { id: 1, name: 'Wireless Mouse', sku: 'WM-1024', quantity: 42, price: 25.99, image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?q=80&w=2600&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', status: 'in-stock' },
-  { id: 2, name: 'Mechanical Keyboard', sku: 'MK-87', quantity: 8, price: 129.50, image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', status: 'low-stock' },
-  { id: 3, name: '4K Monitor', sku: '4KM-27-01', quantity: 0, price: 499.00, image: 'https://images.unsplash.com/photo-1586210579191-30b4a3541465?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', status: 'out-of-stock' },
-  { id: 4, name: 'Webcam Pro', sku: 'WCP-1080', quantity: 15, price: 89.99, image: 'https://images.unsplash.com/photo-1609346938925-6d9b9d2be8a8?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', status: 'in-stock' },
-];
-
-const StatCard = ({ title, value, change, changeType, icon }) => (
-    <motion.div whileHover={{ scale: 1.03 }} style={{ height: '100%' }}>
-        <Paper sx={{ p: 2.5, borderRadius: 4, height: '100%', display: 'flex', flexDirection: 'column', border: '1px solid #E2E8F0', boxShadow: 'none' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <Typography variant="subtitle2" sx={{ color: 'text.secondary', fontWeight: 500, fontSize: '0.8rem' }}>{title}</Typography>
-                {icon}
-            </Box>
-            <Box sx={{ mt: 'auto' }}>
-                <Typography variant="h4" sx={{ fontWeight: 'bold', fontSize: '1.8rem' }}>{value}</Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', color: changeType === 'increase' ? 'success.main' : 'error.main' }}>
-                    {changeType === 'increase' ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-                    <Typography variant="body2" sx={{ fontWeight: 600, ml: 0.5, fontSize: '0.8rem' }}>{change}</Typography>
-                </Box>
-            </Box>
-        </Paper>
-    </motion.div>
-);
-
-const ProductCard = ({ product }) => {
-    const getStatusChip = (status) => {
-        const style = {
-            borderRadius: '12px',
-            fontSize: '0.6rem',
-            fontWeight: 600,
-            px: 1.25,
-            py: 0.5,
-            display: 'inline-flex',
-            alignItems: 'center',
-        };
-        switch (status) {
-            case 'in-stock':
-                return <Box sx={{ ...style, bgcolor: '#DCFCE7', color: '#166534' }}><Box sx={{width: 5, height: 5, borderRadius: '50%', bgcolor: '#22C55E', mr: 0.75}} />In Stock</Box>;
-            case 'low-stock':
-                return <Box sx={{ ...style, bgcolor: '#FEF9C3', color: '#854D0E' }}><Box sx={{width: 5, height: 5, borderRadius: '50%', bgcolor: '#FACC15', mr: 0.75}} />Low Stock</Box>;
-            case 'out-of-stock':
-                return <Box sx={{ ...style, bgcolor: '#FEE2E2', color: '#991B1B' }}><Box sx={{width: 5, height: 5, borderRadius: '50%', bgcolor: '#EF4444', mr: 0.75}} />Out of Stock</Box>;
-            default: return null;
-        }
-    }
-
+// COMPONENTS
+const Card = ({ children, loading, ...props }) => {
+    const theme = useTheme();
     return (
-        <Grid item xs={12} sm={6} md={3}>
-            <motion.div whileHover={{ y: -6, scale: 1.02}} transition={{ duration: 0.2, ease: "easeOut" }} style={{height: '100%'}}>
-                <Paper sx={{
-                    borderRadius: 4, 
-                    overflow: 'hidden', 
-                    border: '1px solid #E2E8F0', 
-                    boxShadow: 'none', 
-                    display: 'flex', 
-                    flexDirection: 'column',
-                    height: '100%',
-                }}>
-                    <Box sx={{ p: 1.5, position: 'relative' }}>
-                        <img src={product.image} alt={product.name} style={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: '12px' }} />
-                        <Box sx={{position: 'absolute', top: 18, right: 18}}>
-                            {getStatusChip(product.status)}
-                        </Box>
+        <Paper sx={{
+            p: 2.5, borderRadius: 4, height: '100%', 
+            border: `1px solid ${theme.palette.divider}`, boxShadow: 'none',
+            ...props.sx
+        }}>
+            {loading ? <Skeleton variant="rounded" height="100%" /> : children}
+        </Paper>
+    )
+}
+
+const SummaryCard = ({ item, loading }) => {
+    const theme = useTheme();
+    const navigate = useNavigate();
+    return (
+        <motion.div
+            onClick={() => navigate(item.path)}
+            whileHover={{ y: -5, boxShadow: '0 10px 20px -5px rgba(0,0,0,0.08)' }}
+            style={{ height: '100%', cursor: 'pointer' }}
+        >
+            <Card loading={loading} sx={{display: 'flex', flexDirection: 'column'}}>
+                <Box sx={{ width: 40, height: 40, borderRadius: '50%', display: 'grid', placeItems: 'center', bgcolor: `${item.color}20`, mb: 1.5 }}>
+                    {item.icon}
+                </Box>
+                <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 0.5 }}>{item.value}</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>{item.title}</Typography>
+                {item.change && (
+                    <Box sx={{ display: 'flex', alignItems: 'center', color: item.changeType === 'increase' ? 'success.main' : 'error.main', mt: 'auto' }}>
+                        <TrendingUp size={14} />
+                        <Typography variant="caption" sx={{ fontWeight: 600, ml: 0.5 }}>{item.change}</Typography>
                     </Box>
-                    <Box sx={{ p: 2, pt: 1, display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
-                        <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5, fontSize: '0.9rem' }}>{product.name}</Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2, fontSize: '0.7rem' }}>SKU: {product.sku}</Typography>
-                        
-                        <Box sx={{ mt: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Typography variant="h5" sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}>{`$${product.price.toFixed(2)}`}</Typography>
-                            <Box>
-                               <motion.div whileTap={{ scale: 0.95 }}>
-                                    <IconButton size="small" sx={{background: '#F1F5F9', borderRadius: '8px', mr: 0.5}}>
-                                        <Edit size={12} />
-                                    </IconButton>
-                               </motion.div>
-                                <motion.div whileTap={{ scale: 0.95 }}>
-                                    <IconButton size="small" sx={{background: '#F1F5F9', borderRadius: '8px'}}>
-                                        <ShoppingBag size={12} />
-                                    </IconButton>
-                                </motion.div>
-                            </Box>
-                        </Box>
-                    </Box>
-                </Paper>
-            </motion.div>
+                )}
+            </Card>
+        </motion.div>
+    );
+};
+
+const QuickActionButton = ({ icon, text, loading, path }) => {
+    const navigate = useNavigate();
+    return (
+        <Grid item xs={6} sm={4} md={2.4}>
+            {loading ? <Skeleton variant="rounded" height={56} /> : (
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} style={{height: '100%'}}>
+                     <Button onClick={() => navigate(path)} variant="outlined" fullWidth startIcon={icon} sx={{ borderRadius: 3, p: 2, height: '100%', flexDirection: 'column', justifyContent: 'center', borderColor: 'divider', color: 'text.primary', textTransform: 'none', fontWeight: 500 }}>
+                        {text}
+                    </Button>
+                </motion.div>
+            )}
         </Grid>
     )
 }
 
 const Dashboard = () => {
-  return (
-    <Box sx={{ p: {xs: 1, md: 0} }}>
-      <Grid container spacing={3.5}>
-        {/* Header */}
-        <Grid item xs={12}>
-             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-                 <div>
-                    <Typography variant="h4" sx={{ fontWeight: 'bold', fontSize: '1.8rem' }}>Good morning, Phoenix</Typography>
-                    <Typography variant="body1" color="text.secondary" sx={{mt: 0.5, fontSize: '0.9rem'}}>Track, manage and forecast your inventory.</Typography>
-                 </div>
-                <Button variant="contained" color="primary" sx={{ borderRadius: '12px', height: 44, px: 3, textTransform: 'none', fontWeight: 600, boxShadow: 'none', fontSize: '0.85rem' }}>
-                    View Full Report
-                </Button>
-            </Box>
-        </Grid>
+    const theme = useTheme();
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        const timer = setTimeout(() => setLoading(false), 1500);
+        return () => clearTimeout(timer);
+    }, []);
 
-        {/* KPI Cards */}
-        <Grid item xs={12} md={4}>
-          <StatCard title="Total Value" value="₦12.6M" change="+18%" changeType="increase" icon={<Briefcase size={20} color="#64748B" />} />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <StatCard title="Total Sales" value="₦4.8M" change="+2.5%" changeType="increase" icon={<ShoppingCart size={20} color="#64748B" />} />
-        </Grid>
-         <Grid item xs={12} md={4}>
-            <motion.div whileHover={{ scale: 1.03 }} style={{ height: '100%' }}>
-                <Paper sx={{ p: 2.5, borderRadius: 4, height: '100%', display: 'flex', flexDirection: 'column', border: '1px solid #E2E8F0', boxShadow: 'none' }}>
-                    <Typography variant="subtitle2" sx={{ color: 'text.secondary', fontWeight: 500, mb: 2, fontSize: '0.8rem' }}>Top Selling Products</Typography>
-                    <AvatarGroup max={4} sx={{justifyContent: 'flex-start'}}>
-                        <Avatar alt="Product 1" src="https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?q=80&w=200&auto=format&fit=crop" />
-                        <Avatar alt="Product 2" src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=200&auto=format&fit=crop" />
-                        <Avatar alt="Product 3" src="https://images.unsplash.com/photo-1586210579191-30b4a3541465?q=80&w=200&auto=format&fit=crop" />
-                        <Avatar alt="Product 4" src="https://images.unsplash.com/photo-1609346938925-6d9b9d2be8a8?q=80&w=200&auto=format&fit=crop" />
-                    </AvatarGroup>
-                    <Button size="small" sx={{mt: 'auto', alignSelf:'flex-start', textTransform: 'none', fontWeight: 600, borderRadius: '8px', fontSize: '0.8rem' }}>View All Products</Button>
-                </Paper>
-            </motion.div>
-        </Grid>
+    const FADE_IN_VARIANTS = {
+        hidden: { opacity: 0, y: 10 },
+        visible: i => ({ opacity: 1, y: 0, transition: { delay: i * 0.05, duration: 0.3, ease: 'easeOut' }})
+    };
 
-        {/* Main Content Area */}
-        <Grid item xs={12} md={12}>
-          <Paper sx={{ p: 3, borderRadius: 4, height: 380, border: '1px solid #E2E8F0', boxShadow: 'none' }}>
-             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Weekly Performance</Typography>
-                <Box>
-                    <Button sx={{textTransform: 'none', color: 'text.primary', fontWeight: 600, borderRadius: '10px', minWidth: 40, mr: 1, bgcolor: '#F1F5F9', fontSize: '0.8rem' }}>Sales</Button>
-                    <Button sx={{textTransform: 'none', color: 'text.secondary', fontWeight: 500, borderRadius: '10px', fontSize: '0.8rem' }}>Purchases</Button>
+    return (
+        <Box sx={{ p: { xs: 2, md: 3 } }}>
+            <motion.div custom={1} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS}>
+                 <Box sx={{ mb: 4, mt: 3 }}>
+                    <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Good Morning, Administrator</Typography>
+                    <Typography variant="body1" color="text.secondary">Here's a summary of today's business activity.</Typography>
                 </Box>
-            </Box>
-            <ResponsiveContainer width="100%" height="90%">
-              <BarChart data={salesData} margin={{ top: 10, right: 0, left: -25, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748B', fontSize: 11}} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748B', fontSize: 11}} dx={-10} />
-                <Tooltip cursor={{fill: 'rgba(241, 245, 249, 0.5)'}} contentStyle={{borderRadius: '12px', borderColor: '#E2E8F0', fontSize: '0.8rem'}}/>
-                <Legend iconType="circle" iconSize={8} wrapperStyle={{paddingTop: 20, fontSize: '0.8rem'}}/>
-                <Bar dataKey="Sales" fill="#2563EB" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Purchases" fill="#93C5FD" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </Paper>
-        </Grid>
+            </motion.div>
 
-        {/* Recent Products Section */}
-        <Grid item xs={12}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h5" sx={{ fontWeight: 'bold', fontSize: '1.4rem' }}>Recent Products</Typography>
-                <Button sx={{textTransform: 'none', fontWeight: 600, borderRadius: '10px', fontSize: '0.85rem' }}>See All</Button>
-            </Box>
-            <Grid container spacing={3}>
-                {mockProducts.map(p => <ProductCard key={p.id} product={p} />)}
+            <Grid container spacing={2.5}>
+                {summaryData.map((item, index) => (
+                    <Grid item xs={6} sm={4} md={3} lg={2.4} key={item.title}>
+                        <motion.div custom={index + 2} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
+                           <SummaryCard item={item} loading={loading} />
+                        </motion.div>
+                    </Grid>
+                ))}
             </Grid>
-        </Grid>
 
-      </Grid>
-    </Box>
-  );
+             <Box sx={{ my: 4 }}>
+                <motion.div custom={7} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS}>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>Quick Actions</Typography>
+                </motion.div>
+                <Grid container spacing={2}>
+                    {loading ? Array.from(new Array(5)).map((_, i) => <QuickActionButton key={i} loading={true} />) :
+                        <>
+                            <QuickActionButton icon={<PlusCircle size={20}/>} text="Add Product" path="/add-product" />
+                            <QuickActionButton icon={<Truck size={20}/>} text="Record Purchase" path="/record-purchase"/>
+                            <QuickActionButton icon={<ShoppingCart size={20}/>} text="Record Sale" path="/record-sale" />
+                            <QuickActionButton icon={<List size={20}/>} text="View Inventory" path="/inventory" />
+                            <QuickActionButton icon={<FileText size={20}/>} text="Reports" path="/reports" />
+                        </>
+                    }
+                </Grid>
+            </Box>
+
+            <Grid container spacing={3}>
+                <Grid item xs={12} md={5}>
+                     <motion.div custom={8} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
+                        <Card loading={loading}>
+                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Low Stock Alerts</Typography>
+                                <Button size="small" endIcon={<ChevronRight size={16}/>} sx={{ textTransform: 'none', fontWeight: 600 }}>View All</Button>
+                            </Box>
+                            {lowStockItems.slice(0, 5).map(item => (
+                            <Box key={item.id} sx={{ display: 'flex', alignItems: 'center', mb: 1.5, p: 1.5, borderRadius: 3, transition: 'background-color 0.2s', '&:hover': { bgcolor: 'action.hover' } }}>
+                                <Avatar src={item.image} variant="rounded" sx={{ width: 48, height: 48, mr: 2 }} />
+                                <Box flexGrow={1}>
+                                    <Typography sx={{ fontWeight: 600 }}>{item.name}</Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        Qty: <Typography component="span" sx={{color: 'warning.main', fontWeight: 'bold'}}>{item.currentQty}</Typography> / {item.minQty}
+                                    </Typography>
+                                </Box>
+                                 <Button variant="contained" size="small" sx={{borderRadius: 2, textTransform: 'none', boxShadow: 'none'}}>Restock</Button>
+                            </Box>
+                            ))}
+                        </Card>
+                     </motion.div>
+                </Grid>
+
+                <Grid item xs={12} md={7}>
+                    <motion.div custom={9} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
+                        <Card loading={loading} sx={{minHeight: 400}}>
+                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Sales Overview</Typography>
+                                <Box>
+                                    <Button size="small" variant="contained" sx={{mr: 1, borderRadius: 2}}>Today</Button>
+                                    <Button size="small" sx={{borderRadius: 2}}>7 Days</Button>
+                                    <Button size="small" sx={{borderRadius: 2}}>30 Days</Button>
+                                </Box>
+                            </Box>
+                             <ResponsiveContainer width="100%" height="90%">
+                                <AreaChart data={salesChartData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+                                    <defs><linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={theme.palette.primary.main} stopOpacity={0.4}/><stop offset="95%" stopColor={theme.palette.primary.main} stopOpacity={0}/></linearGradient></defs>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                    <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} dy={10} />
+                                    <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} dx={-10} formatter={(value) => `₦${value/1000}k`}/>
+                                    <Tooltip formatter={(value) => `₦${value.toLocaleString()}`} contentStyle={{ borderRadius: '12px', borderColor: theme.palette.divider, boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }} itemStyle={{fontWeight: 500}}/>
+                                    <Area type="monotone" dataKey="sales" stroke={theme.palette.primary.main} fillOpacity={1} fill="url(#colorSales)" strokeWidth={2} />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        </Card>
+                    </motion.div>
+                </Grid>
+            </Grid>
+
+            {/* RECENT SALES, TOP PRODUCTS, ACTIVITY TIMELINE */}
+            <Grid container spacing={3} sx={{ mt: 1 }}>
+                <Grid item xs={12} md={6} lg={4}>
+                    <motion.div custom={10} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
+                        <Card loading={loading}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Recent Sales</Typography>
+                                <Button size="small" endIcon={<ChevronRight size={16}/>} sx={{ textTransform: 'none', fontWeight: 600 }}>View All</Button>
+                            </Box>
+                            {recentSales.map(sale => (
+                                <Box key={sale.id} sx={{ display: 'flex', alignItems: 'center', mb: 2, ':last-child': {mb: 0} }}>
+                                    <Avatar sx={{ bgcolor: 'primary.light', mr: 2 }}><ShoppingCart size={20}/></Avatar>
+                                    <Box flexGrow={1}>
+                                        <Typography sx={{ fontWeight: 600 }}>{sale.productName}</Typography>
+                                        <Typography variant="body2" color="text.secondary">{sale.time}</Typography>
+                                    </Box>
+                                    <Typography sx={{ fontWeight: 'bold' }}>{sale.amount}</Typography>
+                                </Box>
+                            ))}
+                        </Card>
+                    </motion.div>
+                </Grid>
+
+                <Grid item xs={12} md={6} lg={5}>
+                    <motion.div custom={11} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
+                        <Card loading={loading}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Top Selling Products</Typography>
+                                <Button size="small" endIcon={<ChevronRight size={16}/>} sx={{ textTransform: 'none', fontWeight: 600 }}>View All</Button>
+                            </Box>
+                             {topSellingProducts.map(prod => (
+                                <Box key={prod.id} sx={{ display: 'flex', alignItems: 'center', mb: 2, ':last-child': {mb: 0} }}>
+                                    <Avatar src={prod.image} variant="rounded" sx={{ width: 48, height: 48, mr: 2 }} />
+                                    <Box flexGrow={1} sx={{ mr: 2 }}>
+                                        <Typography sx={{ fontWeight: 600 }}>{prod.name}</Typography>
+                                        <LinearProgress variant="determinate" value={prod.popularity} sx={{height: 6, borderRadius: 3, mt: 0.5}}/>
+                                    </Box>
+                                    <Box textAlign="right">
+                                        <Typography sx={{ fontWeight: 'bold' }}>{prod.revenue}</Typography>
+                                        <Typography variant="body2" color="text.secondary">{prod.unitsSold} units</Typography>
+                                    </Box>
+                                </Box>
+                            ))}
+                        </Card>
+                    </motion.div>
+                </Grid>
+                
+                <Grid item xs={12} md={12} lg={3}>
+                    <motion.div custom={12} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
+                        <Card loading={loading}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Recent Activity</Typography>
+                                <Button size="small" endIcon={<ChevronRight size={16}/>} sx={{ textTransform: 'none', fontWeight: 600 }}>View All</Button>
+                            </Box>
+                           {recentActivity.map(act => (
+                               <Box key={act.id} sx={{ display: 'flex', alignItems: 'center', mb: 2, ':last-child': {mb: 0} }}>
+                                   <Avatar sx={{ bgcolor: '#E2E8F0', color: 'text.primary', mr: 2 }}><act.icon.type size={18} /></Avatar>
+                                   <Box>
+                                       <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: 1.4 }}>{act.description}</Typography>
+                                       <Typography variant="caption" color="text.secondary">{act.time}</Typography>
+                                   </Box>
+                               </Box>
+                           ))}
+                        </Card>
+                    </motion.div>
+                </Grid>
+            </Grid>
+
+        </Box>
+    );
 };
 
 export default Dashboard;
