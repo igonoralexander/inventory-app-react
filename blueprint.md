@@ -25,7 +25,7 @@ The initial version of the application is complete. All core features are implem
 
 ## Next Steps
 
-*   **Remove Price Information (REVERTED)**: This change has been reverted. The application will continue to display price and revenue information.
+*   **Refactor Reports**: The reports section will be refactored into a tabbed interface with three categories: Inventory, Sales, and Stock. Each category will have a list of available reports, and the ability to export reports to PDF and Excel.
 *   **Connect to a database**: The next major step is to replace the mocked data with a real database.
 *   **Implement user authentication**: Add user accounts and roles to control access to different parts of the application.
 *   **Add more advanced reporting features**: Include options for custom date ranges, data exports, and more detailed analysis.

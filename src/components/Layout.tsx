@@ -42,6 +42,9 @@ const TopBar = () => {
                 height: 68,
                 borderBottom: `1px solid ${theme.palette.divider}`,
                 bgcolor: 'background.paper',
+                position: 'sticky',
+                top: 0,
+                zIndex: 1100,
             }}
         >
             <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
