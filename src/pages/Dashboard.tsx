@@ -20,67 +20,61 @@ import {
 import { motion } from 'framer-motion';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useNavigate } from 'react-router-dom';
+import StyledAvatar from '../components/StyledAvatar';
 
-// MOCK DATA
+// MOCK DATA (RESTORED)
 const summaryData = [
-    { title: 'Pending Stock Alerts', value: '8', change: '', changeType: 'alert', icon: <AlertTriangle size={24} color="#f97316" />, color: '#f97316', path: '/inventory/low-stock' },
-    { title: 'Total Products', value: '890', icon: <BoxIcon size={24} color="#6366f1" />, color: '#6366f1', path: '/products' },
-    { title: 'Products In Stock', value: '750', icon: <Archive size={24} color="#0ea5e9" />, color: '#0ea5e9', path: '/inventory' },
-    { title: 'Low Stock Items', value: '45', icon: <AlertTriangle size={24} color="#f97316" />, color: '#f97316', path: '/inventory/low-stock' },
-    { title: 'Out of Stock', value: '12', icon: <XCircle size={24} color="#dc2626" />, color: '#dc2626', path: '/inventory/out-of-stock' },
+    { title: 'Revenue Today', value: '$1,420', change: '+12%', changeType: 'increase', icon: DollarSign, color: '#10b981', path: '/sales' },
+    { title: 'Total Products', value: '890', icon: BoxIcon, color: '#6366f1', path: '/products' },
+    { title: 'Products In Stock', value: '750', icon: Archive, color: '#0ea5e9', path: '/inventory' },
+    { title: 'Low Stock Items', value: '45', icon: AlertTriangle, color: '#f97316', path: '/inventory/low-stock' },
+    { title: 'Out of Stock', value: '12', icon: XCircle, color: '#dc2626', path: '/inventory/out-of-stock' },
 ];
 const salesChartData = [
-    { name: '12 AM', sales: 20000, revenue: 30000 }, { name: '3 AM', sales: 45000, revenue: 80000 },
-    { name: '6 AM', sales: 60000, revenue: 120000 }, { name: '9 AM', sales: 110000, revenue: 200000 },
-    { name: '12 PM', sales: 150000, revenue: 280000 }, { name: '3 PM', sales: 180000, revenue: 350000 },
-    { name: '6 PM', sales: 160000, revenue: 310000 }, { name: '9 PM', sales: 130000, revenue: 260000 },
+    { name: '12 AM', sales: 2000 }, { name: '3 AM', sales: 4500 },
+    { name: '6 AM', sales: 6000 }, { name: '9 AM', sales: 11000 },
+    { name: '12 PM', sales: 15000 }, { name: '3 PM', sales: 18000 },
+    { name: '6 PM', sales: 16000 }, { name: '9 PM', sales: 13000 },
 ];
 const lowStockItems = [
-    { id: 1, name: 'Espresso Machine', image: 'https://images.unsplash.com/photo-1565679905434-a6c62984ca11?q=80&w=2574&auto=format&fit=crop', currentQty: 8, minQty: 10 },
+    { id: 1, name: 'Espresso Machine', image: '', currentQty: 8, minQty: 10 },
     { id: 2, name: 'Mechanical Keyboard', image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=2670&auto=format&fit=crop', currentQty: 5, minQty: 10 },
-    { id: 3, name: 'Designer Sneakers', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2670&auto=format&fit=crop', currentQty: 3, minQty: 5 },
+    { id: 3, name: 'Designer Sneakers', image: '', currentQty: 3, minQty: 5 },
     { id: 4, name: 'Webcam Pro', image: 'https://images.unsplash.com/photo-1609346938925-6d9b9d2be8a8?q=80&w=2670&auto=format&fit=crop', currentQty: 12, minQty: 15 },
     { id: 5, name: 'Organic Bananas', image: 'https://images.unsplash.com/photo-1571771894824-269f85b83969?q=80&w=2670&auto=format&fit=crop', currentQty: 50, minQty: 100 },
 ];
 const recentSales = [
-  { id: 1, time: '2m ago', productName: 'Espresso Machine', qty: 1, amount: '₦250,000', paymentMethod: 'Card' },
-  { id: 2, time: '15m ago', productName: 'Designer Sneakers', qty: 2, amount: '₦180,000', paymentMethod: 'Cash' },
-  { id: 3, time: '30m ago', productName: 'Webcam Pro', qty: 1, amount: '₦45,000', paymentMethod: 'Transfer' },
-  { id: 4, time: '1h ago', productName: 'Mechanical Keyboard', qty: 1, amount: '₦85,000', paymentMethod: 'Card' },
-  { id: 5, time: '2h ago', productName: 'Organic Bananas', qty: 5, amount: '₦5,000', paymentMethod: 'Cash' },
+  { id: 1, time: '2m ago', productName: 'Espresso Machine', qty: 1, amount: '$250.00' },
+  { id: 2, time: '15m ago', productName: 'Designer Sneakers', qty: 2, amount: '$300.00' },
+  { id: 3, time: '30m ago', productName: 'Webcam Pro', qty: 1, amount: '$79.99' },
+  { id: 4, time: '1h ago', productName: 'Mechanical Keyboard', qty: 1, amount: '$120.00' },
 ];
 const topSellingProducts = [
-  { id: 1, name: 'Espresso Machine', image: 'https://images.unsplash.com/photo-1565679905434-a6c62984ca11?q=80&w=2574&auto=format&fit=crop', unitsSold: 120, revenue: '₦3,000,000', popularity: 92 },
-  { id: 2, name: 'Designer Sneakers', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2670&auto=format&fit=crop', unitsSold: 95, revenue: '₦1,710,000', popularity: 85 },
-  { id: 3, name: 'Mechanical Keyboard', image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=2670&auto=format&fit=crop', unitsSold: 80, revenue: '₦680,000', popularity: 78 },
-  { id: 4, name: 'Webcam Pro', image: 'https://images.unsplash.com/photo-1609346938925-6d9b9d2be8a8?q=80&w=2670&auto=format&fit=crop', unitsSold: 72, revenue: '₦3,240,000', popularity: 70 },
-  { id: 5, name: 'Organic Bananas', image: 'https://images.unsplash.com/photo-1571771894824-269f85b83969?q=80&w=2670&auto=format&fit=crop', unitsSold: 500, revenue: '₦250,000', popularity: 65 },
+  { id: 1, name: 'Espresso Machine', image: '', unitsSold: 120, revenue: '$30,000', popularity: 92 },
+  { id: 2, name: 'Designer Sneakers', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2670&auto=format&fit=crop', unitsSold: 95, revenue: '$14,250', popularity: 85 },
+  { id: 3, name: 'Mechanical Keyboard', image: '', unitsSold: 80, revenue: '$9,600', popularity: 78 },
 ];
 const recentActivity = [
-  { id: 1, icon: <PlusCircle size={16} />, description: 'New product "Designer Watch" added', time: '5m ago' },
-  { id: 2, icon: <ShoppingCart size={16} />, description: 'Sale recorded for "Espresso Machine" (x1)', time: '12m ago' },
-  { id: 3, icon: <Truck size={16} />, description: 'Stock purchased for "Organic Bananas" (+100 units)', time: '45m ago' },
-  { id: 4, icon: <FileText size={16} />, description: 'Product "Webcam Pro" details updated', time: '1h ago' },
-  { id: 5, icon: <XCircle size={16} />, description: 'Product "Old T-Shirt" deleted', time: '3h ago' },
+  { id: 1, icon: PlusCircle, description: 'New product "Designer Watch" added', time: '5m ago' },
+  { id: 2, icon: ShoppingCart, description: 'Sale recorded for "Espresso Machine" (x1)', time: '12m ago' },
+  { id: 3, icon: Truck, description: 'Stock purchased for "Organic Bananas" (+100 units)', time: '45m ago' },
+  { id: 4, icon: FileText, description: 'Product "Webcam Pro" details updated', time: '1h ago' },
+  { id: 5, icon: XCircle, description: 'Product "Old T-Shirt" deleted', time: '3h ago' },
 ];
 
 // COMPONENTS
 const Card = ({ children, loading, ...props }) => {
     const theme = useTheme();
     return (
-        <Paper sx={{
-            p: 2.5, borderRadius: 4, height: '100%', 
-            border: `1px solid ${theme.palette.divider}`, boxShadow: 'none',
-            ...props.sx
-        }}>
+        <Paper sx={{ p: 2.5, borderRadius: 4, height: '100%', border: `1px solid ${theme.palette.divider}`, boxShadow: 'none', ...props.sx }}>
             {loading ? <Skeleton variant="rounded" height="100%" /> : children}
         </Paper>
     )
 }
 
 const SummaryCard = ({ item, loading }) => {
-    const theme = useTheme();
     const navigate = useNavigate();
+    const Icon = item.icon;
     return (
         <motion.div
             onClick={() => navigate(item.path)}
@@ -89,7 +83,7 @@ const SummaryCard = ({ item, loading }) => {
         >
             <Card loading={loading} sx={{display: 'flex', flexDirection: 'column'}}>
                 <Box sx={{ width: 40, height: 40, borderRadius: '50%', display: 'grid', placeItems: 'center', bgcolor: `${item.color}20`, mb: 1.5 }}>
-                    {item.icon}
+                    <Icon size={24} color={item.color} />
                 </Box>
                 <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 0.5 }}>{item.value}</Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>{item.title}</Typography>
@@ -158,11 +152,11 @@ const Dashboard = () => {
                 <Grid container spacing={2}>
                     {loading ? Array.from(new Array(5)).map((_, i) => <QuickActionButton key={i} loading={true} />) :
                         <>
-                            <QuickActionButton icon={<PlusCircle size={20}/>} text="Add Product" path="/add-product" />
-                            <QuickActionButton icon={<Truck size={20}/>} text="Record Purchase" path="/record-purchase"/>
-                            <QuickActionButton icon={<ShoppingCart size={20}/>} text="Record Sale" path="/record-sale" />
-                            <QuickActionButton icon={<List size={20}/>} text="View Inventory" path="/inventory" />
-                            <QuickActionButton icon={<FileText size={20}/>} text="Reports" path="/reports" />
+                            <QuickActionButton key="add" icon={<PlusCircle size={20}/>} text="Add Product" path="/products/add" />
+                            <QuickActionButton key="purchase" icon={<Truck size={20}/>} text="Record Purchase" path="/inventory/record-purchase"/>
+                            <QuickActionButton key="sale" icon={<ShoppingCart size={20}/>} text="Record Sale" path="/sales/record" />
+                            <QuickActionButton key="inventory" icon={<List size={20}/>} text="View Inventory" path="/products" />
+                            <QuickActionButton key="reports" icon={<FileText size={20}/>} text="Reports" path="/reports" />
                         </>
                     }
                 </Grid>
@@ -178,7 +172,7 @@ const Dashboard = () => {
                             </Box>
                             {lowStockItems.slice(0, 5).map(item => (
                             <Box key={item.id} sx={{ display: 'flex', alignItems: 'center', mb: 1.5, p: 1.5, borderRadius: 3, transition: 'background-color 0.2s', '&:hover': { bgcolor: 'action.hover' } }}>
-                                <Avatar src={item.image} variant="rounded" sx={{ width: 48, height: 48, mr: 2 }} />
+                                {item.image ? <Avatar src={item.image} variant="rounded" sx={{ width: 48, height: 48, mr: 2 }} /> : <StyledAvatar name={item.name} variant="rounded" sx={{ width: 48, height: 48, mr: 2 }} />}
                                 <Box flexGrow={1}>
                                     <Typography sx={{ fontWeight: 600 }}>{item.name}</Typography>
                                     <Typography variant="body2" color="text.secondary">
@@ -208,8 +202,8 @@ const Dashboard = () => {
                                     <defs><linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={theme.palette.primary.main} stopOpacity={0.4}/><stop offset="95%" stopColor={theme.palette.primary.main} stopOpacity={0}/></linearGradient></defs>
                                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                     <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} dy={10} />
-                                    <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} dx={-10} formatter={(value) => `₦${value/1000}k`}/>
-                                    <Tooltip formatter={(value) => `₦${value.toLocaleString()}`} contentStyle={{ borderRadius: '12px', borderColor: theme.palette.divider, boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }} itemStyle={{fontWeight: 500}}/>
+                                    <YAxis tickFormatter={(value) => `$${value/1000}k`} tick={{ fontSize: 12 }} axisLine={false} tickLine={false} dx={-10} />
+                                    <Tooltip formatter={(value) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value)} contentStyle={{ borderRadius: '12px', borderColor: theme.palette.divider, boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }} itemStyle={{fontWeight: 500}}/>
                                     <Area type="monotone" dataKey="sales" stroke={theme.palette.primary.main} fillOpacity={1} fill="url(#colorSales)" strokeWidth={2} />
                                 </AreaChart>
                             </ResponsiveContainer>
@@ -220,7 +214,31 @@ const Dashboard = () => {
 
             {/* RECENT SALES, TOP PRODUCTS, ACTIVITY TIMELINE */}
             <Grid container spacing={3} sx={{ mt: 1 }}>
-                <Grid item xs={12} md={6} lg={4}>
+                 <Grid item xs={12} md={6} lg={7}>
+                    <motion.div custom={11} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
+                        <Card loading={loading}>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Top Selling Products</Typography>
+                                <Button size="small" endIcon={<ChevronRight size={16}/>} sx={{ textTransform: 'none', fontWeight: 600 }}>View All</Button>
+                            </Box>
+                             {topSellingProducts.map(prod => (
+                                <Box key={prod.id} sx={{ display: 'flex', alignItems: 'center', mb: 2, ':last-child': {mb: 0} }}>
+                                    {prod.image ? <Avatar src={prod.image} variant="rounded" sx={{ width: 48, height: 48, mr: 2 }} /> : <StyledAvatar name={prod.name} variant="rounded" sx={{ width: 48, height: 48, mr: 2 }} />}
+                                    <Box flexGrow={1} sx={{ mr: 2 }}>
+                                        <Typography sx={{ fontWeight: 600 }}>{prod.name}</Typography>
+                                        <LinearProgress variant="determinate" value={prod.popularity} sx={{height: 6, borderRadius: 3, mt: 0.5}}/>
+                                    </Box>
+                                    <Box textAlign="right">
+                                        <Typography sx={{ fontWeight: 'bold' }}>{prod.unitsSold} units</Typography>
+                                        <Typography variant="body2" color="text.secondary">{prod.revenue}</Typography>
+                                    </Box>
+                                </Box>
+                            ))}
+                        </Card>
+                    </motion.div>
+                </Grid>
+
+                <Grid item xs={12} md={6} lg={5}>
                     <motion.div custom={10} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
                         <Card loading={loading}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -231,7 +249,7 @@ const Dashboard = () => {
                                 <Box key={sale.id} sx={{ display: 'flex', alignItems: 'center', mb: 2, ':last-child': {mb: 0} }}>
                                     <Avatar sx={{ bgcolor: 'primary.light', mr: 2 }}><ShoppingCart size={20}/></Avatar>
                                     <Box flexGrow={1}>
-                                        <Typography sx={{ fontWeight: 600 }}>{sale.productName}</Typography>
+                                        <Typography sx={{ fontWeight: 600 }}>{sale.productName} (x{sale.qty})</Typography>
                                         <Typography variant="body2" color="text.secondary">{sale.time}</Typography>
                                     </Box>
                                     <Typography sx={{ fontWeight: 'bold' }}>{sale.amount}</Typography>
@@ -240,47 +258,26 @@ const Dashboard = () => {
                         </Card>
                     </motion.div>
                 </Grid>
-
-                <Grid item xs={12} md={6} lg={5}>
-                    <motion.div custom={11} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
-                        <Card loading={loading}>
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Top Selling Products</Typography>
-                                <Button size="small" endIcon={<ChevronRight size={16}/>} sx={{ textTransform: 'none', fontWeight: 600 }}>View All</Button>
-                            </Box>
-                             {topSellingProducts.map(prod => (
-                                <Box key={prod.id} sx={{ display: 'flex', alignItems: 'center', mb: 2, ':last-child': {mb: 0} }}>
-                                    <Avatar src={prod.image} variant="rounded" sx={{ width: 48, height: 48, mr: 2 }} />
-                                    <Box flexGrow={1} sx={{ mr: 2 }}>
-                                        <Typography sx={{ fontWeight: 600 }}>{prod.name}</Typography>
-                                        <LinearProgress variant="determinate" value={prod.popularity} sx={{height: 6, borderRadius: 3, mt: 0.5}}/>
-                                    </Box>
-                                    <Box textAlign="right">
-                                        <Typography sx={{ fontWeight: 'bold' }}>{prod.revenue}</Typography>
-                                        <Typography variant="body2" color="text.secondary">{prod.unitsSold} units</Typography>
-                                    </Box>
-                                </Box>
-                            ))}
-                        </Card>
-                    </motion.div>
-                </Grid>
                 
-                <Grid item xs={12} md={12} lg={3}>
+                <Grid item xs={12} lg={12}>
                     <motion.div custom={12} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
                         <Card loading={loading}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Recent Activity</Typography>
                                 <Button size="small" endIcon={<ChevronRight size={16}/>} sx={{ textTransform: 'none', fontWeight: 600 }}>View All</Button>
                             </Box>
-                           {recentActivity.map(act => (
-                               <Box key={act.id} sx={{ display: 'flex', alignItems: 'center', mb: 2, ':last-child': {mb: 0} }}>
-                                   <Avatar sx={{ bgcolor: '#E2E8F0', color: 'text.primary', mr: 2 }}><act.icon.type size={18} /></Avatar>
-                                   <Box>
-                                       <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: 1.4 }}>{act.description}</Typography>
-                                       <Typography variant="caption" color="text.secondary">{act.time}</Typography>
+                           {recentActivity.map(act => {
+                               const Icon = act.icon;
+                               return (
+                                   <Box key={act.id} sx={{ display: 'flex', alignItems: 'center', mb: 2, ':last-child': {mb: 0} }}>
+                                       <Avatar sx={{ bgcolor: '#E2E8F0', color: 'text.primary', mr: 2 }}><Icon size={18} /></Avatar>
+                                       <Box>
+                                           <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: 1.4 }}>{act.description}</Typography>
+                                           <Typography variant="caption" color="text.secondary">{act.time}</Typography>
+                                       </Box>
                                    </Box>
-                               </Box>
-                           ))}
+                               )
+                           })}
                         </Card>
                     </motion.div>
                 </Grid>

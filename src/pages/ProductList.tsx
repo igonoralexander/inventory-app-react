@@ -7,8 +7,9 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import StyledAvatar from '../components/StyledAvatar';
 
-// Mock Data (Price info removed)
+// Mock Data
 const mockProducts = [
   {
     id: 1,
@@ -26,7 +27,7 @@ const mockProducts = [
     category: 'Electronics',
     stock: 8,
     status: 'low-stock',
-    image: 'https://images.unsplash.com/photo-1565679905434-a6c62984ca11?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+    image: '' // No image
   },
   {
     id: 3,
@@ -44,7 +45,7 @@ const mockProducts = [
     category: 'Drinks',
     stock: 250,
     status: 'in-stock',
-    image: 'https://images.unsplash.com/photo-1550522434-3F57f3a83017?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+    image: '' // No image
   },
 ];
 
@@ -57,11 +58,11 @@ const ProductCard = ({ product }) => {
   const open = Boolean(anchorEl);
 
   const handleMenuClick = (event) => {
-    event.stopPropagation(); // Prevent card click when opening menu
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
   const handleMenuClose = (event) => {
-    event.stopPropagation(); // Prevent card click when closing menu
+    event.stopPropagation();
     setAnchorEl(null);
   };
 
@@ -89,17 +90,23 @@ const ProductCard = ({ product }) => {
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <motion.div whileHover={{ y: -6, boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }} transition={{ duration: 0.3, ease: "easeOut" }} style={{height: '100%'}} onClick={handleCardClick}>
         <Paper sx={{ borderRadius: 4, overflow: 'hidden', border: `1px solid ${theme.palette.divider}`, boxShadow: 'none', display: 'flex', flexDirection: 'column', height: '100%', cursor: 'pointer' }}>
-          <img src={product.image} alt={product.name} style={{ width: '100%', height: 180, objectFit: 'cover' }} />
+          <Box sx={{ height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'background.default' }}>
+            {product.image ? (
+              <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <StyledAvatar name={product.name} sx={{ width: 80, height: 80, fontSize: '2rem' }} />
+            )}
+          </Box>
           <Box sx={{ p: 2, display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '1rem', mb: 0.5 }}>{product.name}</Typography>
               <IconButton size="small" onClick={handleMenuClick}><MoreVertical size={18} /></IconButton>
-              <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose} MenuListProps={{ 'aria-labelledby': 'basic-button' }}>
-                <MenuItem onClick={handleMenuClose}>View</MenuItem>
-                <MenuItem onClick={handleMenuClose}>Delete</MenuItem>
+              <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
+                <MenuItem onClick={handleMenuClose}>Edit</MenuItem>
+                <MenuItem onClick={handleMenuClose} sx={{color: 'error.main'}}>Delete</MenuItem>
               </Menu>
             </Box>
-            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem', mb: 2 }}>{product.sku} &bull; {product.category}</Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.8rem', mb: 2 }}>{product.sku}{product.category && ` • ${product.category}`}</Typography>
             
             <Box sx={{ mt: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Box>
@@ -130,22 +137,10 @@ const ProductList = () => {
             justifyContent: 'space-between', 
             alignItems: 'center', 
             mb: 3,
-            p: isDesktop ? 0 : 2,
-            borderBottom: isDesktop ? 'none' : `1px solid ${theme.palette.divider}`,
-            position: isDesktop ? 'static' : 'fixed',
-            top: 0, left: 0, right: 0, 
-            bgcolor: 'background.paper',
-            zIndex: 1100
+            flexWrap: 'wrap',
+            gap: 2
         }}>
-            {isDesktop ? (
-                <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Products</Typography>
-            ) : (
-                <>
-                    <IconButton><ArrowLeft /></IconButton>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>Products</Typography>
-                    <Box />
-                </>
-            )}
+            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Products</Typography>
             <Box>
                 <Button 
                     variant="outlined"
@@ -167,7 +162,7 @@ const ProductList = () => {
             </Box>
         </Box>
 
-      <Box sx={{ mt: isDesktop ? 0 : '72px', pb: 8 }}>
+      <Box sx={{ pb: 8 }}>
         
         {/* Search Field */}
         <Paper elevation={0} sx={{ display: 'flex', alignItems: 'center', p: '8px 16px', borderRadius: 3, border: `1px solid ${theme.palette.divider}`, mb: 3 }}>

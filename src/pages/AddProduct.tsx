@@ -24,7 +24,44 @@ const AddProduct = () => {
       </Box>
 
       <Grid container spacing={4}>
-        {/* Left Side - Image Upload */}
+        {/* Left Side - Form Fields */}
+        <Grid item xs={12} md={8}>
+          <Paper
+            sx={{
+              p: isDesktop ? 4 : 2,
+              borderRadius: 4,
+              border: `1px solid ${theme.palette.divider}`,
+              boxShadow: 'none'
+            }}
+          >
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <TextField fullWidth label="Product Name" variant="outlined" required />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField fullWidth label="SKU / Barcode" variant="outlined" />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth variant="outlined">
+                  <InputLabel>Category (Optional)</InputLabel>
+                  <Select label="Category (Optional)">
+                    {categories.map((cat) => (
+                      <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField fullWidth label="Supplier (Optional)" variant="outlined" />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField fullWidth label="Initial Stock Quantity" type="number" variant="outlined" required />
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+
+        {/* Right Side - Image Upload */}
         <Grid item xs={12} md={4}>
           <Paper
             component={motion.div}
@@ -46,7 +83,7 @@ const AddProduct = () => {
           >
             <UploadCloud size={48} color={theme.palette.text.secondary} />
             <Typography sx={{ mt: 2, fontWeight: 600, color: 'text.primary' }}>
-              Upload Product Image
+              Upload Image (Optional)
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               Drag and drop or click to browse
@@ -55,40 +92,6 @@ const AddProduct = () => {
               Browse
               <input type="file" hidden />
             </Button>
-          </Paper>
-        </Grid>
-
-        {/* Right Side - Form Fields */}
-        <Grid item xs={12} md={8}>
-          <Paper
-            sx={{
-              p: isDesktop ? 4 : 2,
-              borderRadius: 4,
-              border: `1px solid ${theme.palette.divider}`,
-              boxShadow: 'none'
-            }}
-          >
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <TextField fullWidth label="Product Name" variant="outlined" />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="SKU / Barcode" variant="outlined" />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth variant="outlined">
-                  <InputLabel>Category</InputLabel>
-                  <Select label="Category">
-                    {categories.map((cat) => (
-                      <MenuItem key={cat} value={cat}>{cat}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField fullWidth label="Initial Stock Quantity" type="number" variant="outlined" />
-              </Grid>
-            </Grid>
           </Paper>
         </Grid>
       </Grid>

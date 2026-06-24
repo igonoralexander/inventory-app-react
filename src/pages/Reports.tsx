@@ -1,116 +1,134 @@
 import React from 'react';
 import {
-  Box, Typography, Grid, Paper, Button, Chip
+    Box, Typography, Grid, Paper, Avatar, useTheme
 } from '@mui/material';
-import { Download, Calendar, DollarSign, ShoppingBag, TrendingUp, BarChart, PieChart, Star } from 'lucide-react';
-import { Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Pie, Cell } from 'recharts';
+import {
+    DollarSign, ShoppingCart, Users, TrendingUp
+} from 'lucide-react';
+import {
+    BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
+} from 'recharts';
 import { motion } from 'framer-motion';
-import { BarChart as RechartsBarChart } from 'recharts';
-import { PieChart as RechartsPieChart } from 'recharts';
+import StyledAvatar from '../components/StyledAvatar';
 
-const salesData = [
-  { name: 'Jan', revenue: 4000 },
-  { name: 'Feb', revenue: 3000 },
-  { name: 'Mar', revenue: 5000 },
-  { name: 'Apr', revenue: 4500 },
-  { name: 'May', revenue: 6000 },
-  { name: 'Jun', revenue: 5500 },
+// MOCK DATA
+const stats = [
+    { title: 'Total Revenue', value: '$24,350', icon: <DollarSign size={24} />, color: '#10b981' },
+    { title: 'Total Sales', value: '1,250', icon: <ShoppingCart size={24} />, color: '#3b82f6' },
+    { title: 'Total Customers', value: '820', icon: <Users size={24} />, color: '#8b5cf6' },
+    { title: 'Avg. Sale Value', value: '$19.48', icon: <TrendingUp size={24} />, color: '#f97316' },
 ];
 
-const categoryData = [
-  { name: 'Electronics', value: 400 },
-  { name: 'Clothing', value: 300 },
-  { name: 'Groceries', value: 300 },
-  { name: 'Books', value: 200 },
+const revenueData = [
+    { month: 'Jan', revenue: 1800 }, { month: 'Feb', revenue: 2200 }, { month: 'Mar', revenue: 3500 },
+    { month: 'Apr', revenue: 4100 }, { month: 'May', revenue: 3900 }, { month: 'Jun', revenue: 5200 },
 ];
 
-const COLORS = ['#2563EB', '#3B82F6', '#60A5FA', '#93C5FD'];
+const salesByCategoryData = [
+    { name: 'Electronics', sales: 4000 },
+    { name: 'Clothing', sales: 3000 },
+    { name: 'Groceries', sales: 2000 },
+    { name: 'Home Goods', sales: 2780 },
+    { name: 'Toys', sales: 1890 },
+];
 
 const topProducts = [
-    { name: 'Wireless Mouse', sold: 120, revenue: 3118.8 },
-    { name: 'Mechanical Keyboard', sold: 75, revenue: 9712.5 },
-    { name: '4K Monitor', sold: 50, revenue: 24950 },
+    { name: 'Espresso Machine', revenue: '$30,000' },
+    { name: 'Designer Sneakers', revenue: '$14,250' },
+    { name: 'Mechanical Keyboard', revenue: '$9,600' },
+    { name: 'Webcam Pro', revenue: '$5,760' },
+    { name: 'Organic Bananas', revenue: '$2,500' },
 ];
 
-const StatCard = ({ title, value, icon }: { title: string; value: string; icon: React.ReactNode }) => (
-    <Grid item xs={12} sm={4}>
-        <Paper sx={{ p: 2, display: 'flex', alignItems: 'center', borderRadius: 4 }}>
-            {icon}
-            <Box ml={2}>
-                <Typography color="textSecondary" variant="body2">{title}</Typography>
-                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{value}</Typography>
-            </Box>
-        </Paper>
-    </Grid>
+const StatCard = ({ item }) => (
+    <Paper sx={{ p: 2, display: 'flex', alignItems: 'center', borderRadius: 4, height: '100%', border: theme => `1px solid ${theme.palette.divider}` }}>
+        <Avatar sx={{ bgcolor: `${item.color}20`, color: item.color, mr: 2, width: 48, height: 48 }}>{item.icon}</Avatar>
+        <Box>
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{item.value}</Typography>
+            <Typography color="text.secondary">{item.title}</Typography>
+        </Box>
+    </Paper>
 );
 
 const Reports = () => {
-  return (
-    <Box sx={{ px: '20px', pb: '20px' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', my: 3 }}>
-            <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Reports</Typography>
-            <Box>
-                <Button variant="outlined" startIcon={<Calendar size={18}/>} sx={{ mr: 1 }}>Last 30 Days</Button>
-                <Button variant="contained" startIcon={<Download size={18}/>}>Export</Button>
-            </Box>
-        </Box>
+    const theme = useTheme();
 
-        <Grid container spacing={2} mb={3}>
-            <StatCard title="Total Revenue" value="$28,350" icon={<DollarSign size={32} color="#16A34A" />} />
-            <StatCard title="Total Profit" value="$12,890" icon={<TrendingUp size={32} color="#2563EB" />} />
-            <StatCard title="Total Orders" value="452" icon={<ShoppingBag size={32} color="#F97316" />} />
-        </Grid>
+    const FADE_IN_VARIANTS = {
+        hidden: { opacity: 0, y: 10 },
+        visible: i => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.5 } })
+    };
 
-        <Grid container spacing={3}>
-            <Grid item xs={12} md={7}>
-                 <Paper sx={{ p: 2, borderRadius: 4, height: '400px' }}>
-                     <Typography variant="h6" sx={{ fontWeight: 'bold' }} gutterBottom>Sales Trend</Typography>
-                    <ResponsiveContainer width="100%" height="90%">
-                        <RechartsBarChart data={salesData}>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false}/>
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Bar dataKey="revenue" fill="#2563EB" />
-                        </RechartsBarChart>
+    return (
+        <Box sx={{ p: { xs: 2, md: 3 } }}>
+            <motion.div custom={0} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS}>
+                <Box sx={{ mb: 4, mt: 2 }}>
+                    <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Business Reports</Typography>
+                    <Typography variant="body1" color="text.secondary">An overview of your business performance.</Typography>
+                </Box>
+            </motion.div>
+
+            <Grid container spacing={3} sx={{ mb: 3 }}>
+                {stats.map((stat, i) => (
+                    <Grid item xs={12} sm={6} md={3} key={stat.title}>
+                         <motion.div custom={i+1} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
+                           <StatCard item={stat} />
+                        </motion.div>
+                    </Grid>
+                ))}
+            </Grid>
+
+            <Grid container spacing={3} sx={{ mb: 3 }}>
+                <Grid item xs={12} lg={8}>
+                    <motion.div custom={5} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
+                         <Paper sx={{ p: {xs: 2, md: 3}, borderRadius: 4, height: '100%', border: theme => `1px solid ${theme.palette.divider}` }}>
+                            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>Monthly Revenue</Typography>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <LineChart data={revenueData}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                    <XAxis dataKey="month" />
+                                    <YAxis tickFormatter={(value) => `$${value/1000}k`} />
+                                    <Tooltip formatter={(value) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value)} />
+                                    <Line type="monotone" dataKey="revenue" stroke={theme.palette.primary.main} strokeWidth={2} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </Paper>
+                    </motion.div>
+                </Grid>
+                 <Grid item xs={12} lg={4}>
+                     <motion.div custom={6} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
+                         <Paper sx={{ p: {xs: 2, md: 3}, borderRadius: 4, height: '100%', border: theme => `1px solid ${theme.palette.divider}` }}>
+                            <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>Top Products by Revenue</Typography>
+                            {topProducts.map(product => (
+                                <Box key={product.name} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                                    <StyledAvatar name={product.name} sx={{ mr: 2 }} />
+                                    <Box flexGrow={1}>
+                                        <Typography sx={{ fontWeight: 600 }}>{product.name}</Typography>
+                                    </Box>
+                                    <Typography sx={{ fontWeight: 'bold' }}>{product.revenue}</Typography>
+                                </Box>
+                            ))}
+                        </Paper>
+                    </motion.div>
+                </Grid>
+            </Grid>
+
+            <motion.div custom={7} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS}>
+                <Paper sx={{ p: {xs: 2, md: 3}, borderRadius: 4, border: theme => `1px solid ${theme.palette.divider}` }}>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>Sales by Category</Typography>
+                    <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={salesByCategoryData} layout="vertical">
+                            <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                            <XAxis type="number" tickFormatter={(value) => `$${value/1000}k`} />
+                            <YAxis dataKey="name" type="category" width={100} />
+                            <Tooltip formatter={(value) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value)} />
+                            <Bar dataKey="sales" fill={theme.palette.primary.main} radius={[0, 4, 4, 0]} barSize={20} />
+                        </BarChart>
                     </ResponsiveContainer>
                 </Paper>
-            </Grid>
-            <Grid item xs={12} md={5}>
-                 <Paper sx={{ p: 2, borderRadius: 4, height: '400px' }}>
-                     <Typography variant="h6" sx={{ fontWeight: 'bold' }} gutterBottom>Category Breakdown</Typography>
-                     <ResponsiveContainer width="100%" height="90%">
-                        <RechartsPieChart>
-                            <Pie data={categoryData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={120} label>
-                                {categoryData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                ))}
-                            </Pie>
-                            <Tooltip />
-                            <Legend />
-                        </RechartsPieChart>
-                     </ResponsiveContainer>
-                </Paper>
-            </Grid>
-             <Grid item xs={12}>
-                <Paper sx={{ p: 2, borderRadius: 4 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold' }} gutterBottom>Top Selling Products</Typography>
-                    {topProducts.map(product => (
-                        <Box key={product.name} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 1, borderBottom: '1px solid #E5E7EB' }}>
-                            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>{product.name}</Typography>
-                            <Box textAlign="right">
-                                <Typography variant="body2">Sold: {product.sold}</Typography>
-                                <Typography variant="body2" sx={{ fontWeight: 600, color: 'success.main' }}>Revenue: ${product.revenue.toLocaleString()}</Typography>
-                            </Box>
-                        </Box>
-                    ))}
-                </Paper>
-             </Grid>
-        </Grid>
+            </motion.div>
 
-    </Box>
-  );
+        </Box>
+    );
 };
 
 export default Reports;
