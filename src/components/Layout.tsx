@@ -1,8 +1,8 @@
-import { Outlet, useLocation, NavLink } from 'react-router-dom';
+import { Outlet, useLocation, NavLink, useNavigate } from 'react-router-dom';
 import {
-    Box, Typography, CssBaseline, useTheme, useMediaQuery, Avatar, InputBase, IconButton, Badge, Popper, Paper, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider, Button
+    Box, Typography, CssBaseline, useTheme, useMediaQuery, Avatar, InputBase, IconButton, Badge, Popper, Paper, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Divider
 } from '@mui/material';
-import { LogOut, ChevronDown, Search, Bell, AlertTriangle, CheckCircle } from 'lucide-react';
+import { LogOut, ChevronDown, Search, Bell, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import BottomNavigation from './BottomNavigation';
 import React from 'react';
@@ -10,6 +10,10 @@ import toast, { Toaster } from 'react-hot-toast';
 
 const TopBar = () => {
     const theme = useTheme();
+    const isDesktop = useMediaQuery(theme.breakpoints.up('lg'));
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => setAnchorEl(event.currentTarget);
@@ -17,11 +21,16 @@ const TopBar = () => {
     const handleLogout = () => {
         toast.success('Logged out successfully');
         handleClose();
+        navigate('/login');
     };
 
     const showDemoToast = () => {
         toast.error('This is an error message!');
     }
+
+    const mainPages = ['/dashboard', '/sales', '/reports', '/more', '/settings', '/products', '/inventory'];
+    const showBackButton = !mainPages.includes(location.pathname) && !isDesktop;
+
 
     return (
         <Box
@@ -29,29 +38,44 @@ const TopBar = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                px: 3,
+                px: 2,
                 height: 68,
                 borderBottom: `1px solid ${theme.palette.divider}`,
                 bgcolor: 'background.paper',
             }}
         >
-            <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                InventoryPro
-            </Typography>
-
-            <Box sx={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                bgcolor: theme.palette.background.default, 
-                borderRadius: '12px', 
-                p: '6px 12px', 
-                width: '40%'
-            }}>
-                <Search size={20} color={theme.palette.text.secondary} />
-                <InputBase sx={{ ml: 1.5, flex: 1, fontWeight: 500, fontSize: '0.9rem' }} placeholder="Search products, invoices, or suppliers..." />
+            <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                {showBackButton ? (
+                    <IconButton onClick={() => navigate(-1)}>
+                        <ArrowLeft size={22} />
+                    </IconButton>
+                ) : (
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'primary.main', ml: 1 }}>
+                        InventoryPro
+                    </Typography>
+                )}
             </Box>
+
+            {isDesktop && (
+              <Box sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  bgcolor: theme.palette.background.default, 
+                  borderRadius: '12px', 
+                  p: '6px 12px', 
+                  width: '40%'
+              }}>
+                  <Search size={20} color={theme.palette.text.secondary} />
+                  <InputBase sx={{ ml: 1.5, flex: 1, fontWeight: 500, fontSize: '0.9rem' }} placeholder="Search..." />
+              </Box>
+            )}
             
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                 {!isDesktop && (
+                    <IconButton>
+                         <Search size={22} color={theme.palette.text.secondary} />
+                    </IconButton>
+                )}
                 <IconButton onClick={showDemoToast}>
                     <Badge color="error" variant="dot">
                         <Bell size={22} color={theme.palette.text.secondary} />
@@ -60,7 +84,7 @@ const TopBar = () => {
 
                 <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={handleClick}>
                     <Avatar src="https://i.pravatar.cc/300" sx={{ width: 40, height: 40 }} />
-                    <ChevronDown size={20} color={theme.palette.text.secondary} style={{ marginLeft: 8 }} />
+                     {isDesktop && <ChevronDown size={20} color={theme.palette.text.secondary} style={{ marginLeft: 8 }} />}
                 </Box>
 
                 <Popper open={open} anchorEl={anchorEl} placement="bottom-end" transition sx={{zIndex: 1200}}>
@@ -76,7 +100,7 @@ const TopBar = () => {
                                 </Box>
                                 <Divider />
                                 <List disablePadding sx={{p: 1}}>
-                                    <ListItemButton component={NavLink} to="/login" sx={{ borderRadius: 2 }} onClick={handleLogout}>
+                                    <ListItemButton sx={{ borderRadius: 2 }} onClick={handleLogout}>
                                         <ListItemIcon sx={{ minWidth: 40 }}><LogOut size={20} /></ListItemIcon>
                                         <ListItemText primary="Logout" primaryTypographyProps={{ fontWeight: 500 }}/>
                                     </ListItemButton>
@@ -129,7 +153,7 @@ const Layout = () => {
                     },
                 }}
             />
-            {isDesktop ? <TopBar /> : null}
+            <TopBar />
             <Box component="main" sx={{ p: isDesktop ? 4 : 2, pb: '88px' }}>
                 <AnimatePresence mode="wait">
                     <motion.div
@@ -143,7 +167,7 @@ const Layout = () => {
                     </motion.div>
                 </AnimatePresence>
             </Box>
-            <BottomNavigation />
+            {!location.pathname.startsWith('/login') && !location.pathname.startsWith('/register') && <BottomNavigation />}
         </Box>
     );
 };

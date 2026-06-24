@@ -7,34 +7,24 @@ import {
   AlertTriangle,
   XCircle,
   TrendingUp,
-  DollarSign,
   PlusCircle,
   ShoppingCart,
   Truck,
   FileText,
   List,
   ChevronRight,
-  ArrowUp,
   Box as BoxIcon
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import StyledAvatar from '../components/StyledAvatar';
 
-// MOCK DATA (RESTORED)
+// MOCK DATA (Price Removed)
 const summaryData = [
-    { title: 'Revenue Today', value: '$1,420', change: '+12%', changeType: 'increase', icon: DollarSign, color: '#10b981', path: '/sales' },
     { title: 'Total Products', value: '890', icon: BoxIcon, color: '#6366f1', path: '/products' },
     { title: 'Products In Stock', value: '750', icon: Archive, color: '#0ea5e9', path: '/inventory' },
     { title: 'Low Stock Items', value: '45', icon: AlertTriangle, color: '#f97316', path: '/inventory/low-stock' },
     { title: 'Out of Stock', value: '12', icon: XCircle, color: '#dc2626', path: '/inventory/out-of-stock' },
-];
-const salesChartData = [
-    { name: '12 AM', sales: 2000 }, { name: '3 AM', sales: 4500 },
-    { name: '6 AM', sales: 6000 }, { name: '9 AM', sales: 11000 },
-    { name: '12 PM', sales: 15000 }, { name: '3 PM', sales: 18000 },
-    { name: '6 PM', sales: 16000 }, { name: '9 PM', sales: 13000 },
 ];
 const lowStockItems = [
     { id: 1, name: 'Espresso Machine', image: '', currentQty: 8, minQty: 10 },
@@ -44,15 +34,15 @@ const lowStockItems = [
     { id: 5, name: 'Organic Bananas', image: 'https://images.unsplash.com/photo-1571771894824-269f85b83969?q=80&w=2670&auto=format&fit=crop', currentQty: 50, minQty: 100 },
 ];
 const recentSales = [
-  { id: 1, time: '2m ago', productName: 'Espresso Machine', qty: 1, amount: '$250.00' },
-  { id: 2, time: '15m ago', productName: 'Designer Sneakers', qty: 2, amount: '$300.00' },
-  { id: 3, time: '30m ago', productName: 'Webcam Pro', qty: 1, amount: '$79.99' },
-  { id: 4, time: '1h ago', productName: 'Mechanical Keyboard', qty: 1, amount: '$120.00' },
+  { id: 1, time: '2m ago', productName: 'Espresso Machine', qty: 1 },
+  { id: 2, time: '15m ago', productName: 'Designer Sneakers', qty: 2 },
+  { id: 3, time: '30m ago', productName: 'Webcam Pro', qty: 1 },
+  { id: 4, time: '1h ago', productName: 'Mechanical Keyboard', qty: 1 },
 ];
 const topSellingProducts = [
-  { id: 1, name: 'Espresso Machine', image: '', unitsSold: 120, revenue: '$30,000', popularity: 92 },
-  { id: 2, name: 'Designer Sneakers', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2670&auto=format&fit=crop', unitsSold: 95, revenue: '$14,250', popularity: 85 },
-  { id: 3, name: 'Mechanical Keyboard', image: '', unitsSold: 80, revenue: '$9,600', popularity: 78 },
+  { id: 1, name: 'Espresso Machine', image: '', unitsSold: 120, popularity: 92 },
+  { id: 2, name: 'Designer Sneakers', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2670&auto=format&fit=crop', unitsSold: 95, popularity: 85 },
+  { id: 3, name: 'Mechanical Keyboard', image: '', unitsSold: 80, popularity: 78 },
 ];
 const recentActivity = [
   { id: 1, icon: PlusCircle, description: 'New product "Designer Watch" added', time: '5m ago' },
@@ -114,7 +104,6 @@ const QuickActionButton = ({ icon, text, loading, path }) => {
 }
 
 const Dashboard = () => {
-    const theme = useTheme();
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 1500);
@@ -185,36 +174,8 @@ const Dashboard = () => {
                         </Card>
                      </motion.div>
                 </Grid>
-
-                <Grid item xs={12} md={7}>
-                    <motion.div custom={9} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
-                        <Card loading={loading} sx={{minHeight: 400}}>
-                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Sales Overview</Typography>
-                                <Box>
-                                    <Button size="small" variant="contained" sx={{mr: 1, borderRadius: 2}}>Today</Button>
-                                    <Button size="small" sx={{borderRadius: 2}}>7 Days</Button>
-                                    <Button size="small" sx={{borderRadius: 2}}>30 Days</Button>
-                                </Box>
-                            </Box>
-                             <ResponsiveContainer width="100%" height="90%">
-                                <AreaChart data={salesChartData} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
-                                    <defs><linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={theme.palette.primary.main} stopOpacity={0.4}/><stop offset="95%" stopColor={theme.palette.primary.main} stopOpacity={0}/></linearGradient></defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                    <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} dy={10} />
-                                    <YAxis tickFormatter={(value) => `$${value/1000}k`} tick={{ fontSize: 12 }} axisLine={false} tickLine={false} dx={-10} />
-                                    <Tooltip formatter={(value) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value)} contentStyle={{ borderRadius: '12px', borderColor: theme.palette.divider, boxShadow: '0 5px 15px rgba(0,0,0,0.1)' }} itemStyle={{fontWeight: 500}}/>
-                                    <Area type="monotone" dataKey="sales" stroke={theme.palette.primary.main} fillOpacity={1} fill="url(#colorSales)" strokeWidth={2} />
-                                </AreaChart>
-                            </ResponsiveContainer>
-                        </Card>
-                    </motion.div>
-                </Grid>
-            </Grid>
-
-            {/* RECENT SALES, TOP PRODUCTS, ACTIVITY TIMELINE */}
-            <Grid container spacing={3} sx={{ mt: 1 }}>
-                 <Grid item xs={12} md={6} lg={7}>
+                
+                 <Grid item xs={12} md={7}>
                     <motion.div custom={11} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
                         <Card loading={loading}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -230,14 +191,15 @@ const Dashboard = () => {
                                     </Box>
                                     <Box textAlign="right">
                                         <Typography sx={{ fontWeight: 'bold' }}>{prod.unitsSold} units</Typography>
-                                        <Typography variant="body2" color="text.secondary">{prod.revenue}</Typography>
                                     </Box>
                                 </Box>
                             ))}
                         </Card>
                     </motion.div>
                 </Grid>
+            </Grid>
 
+            <Grid container spacing={3} sx={{ mt: 1 }}>
                 <Grid item xs={12} md={6} lg={5}>
                     <motion.div custom={10} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
                         <Card loading={loading}>
@@ -252,14 +214,13 @@ const Dashboard = () => {
                                         <Typography sx={{ fontWeight: 600 }}>{sale.productName} (x{sale.qty})</Typography>
                                         <Typography variant="body2" color="text.secondary">{sale.time}</Typography>
                                     </Box>
-                                    <Typography sx={{ fontWeight: 'bold' }}>{sale.amount}</Typography>
                                 </Box>
                             ))}
                         </Card>
                     </motion.div>
                 </Grid>
                 
-                <Grid item xs={12} lg={12}>
+                <Grid item xs={12} md={6} lg={7}>
                     <motion.div custom={12} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
                         <Card loading={loading}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>

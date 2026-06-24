@@ -1,11 +1,11 @@
 import { Paper, BottomNavigation as MuiBottomNavigation, BottomNavigationAction, useTheme } from '@mui/material';
-import { LayoutGrid, DollarSign, Package, BarChart2, MoreHorizontal } from 'lucide-react';
+import { LayoutGrid, Package, BarChart2, MoreHorizontal, Archive } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
 const navItems = [
   { path: '/dashboard', label: 'Home', icon: <LayoutGrid /> },
-  { path: '/sales', label: 'Sales', icon: <DollarSign /> },
-  { path: '/products', label: 'Products', icon: <Package /> },
+  { path: '/products', label: 'Inventory', icon: <Package /> },
+  { path: '/inventory/record-purchase', label: 'Purchase', icon: <Archive /> },
   { path: '/reports', label: 'Reports', icon: <BarChart2 /> },
   { path: '/more', label: 'More', icon: <MoreHorizontal /> },
 ];
@@ -22,6 +22,7 @@ const BottomNavigation = () => {
                 right: 0,
                 borderTop: `1px solid ${theme.palette.divider}`,
                 borderRadius: 0,
+                zIndex: 1100
             }} 
             elevation={0}
         >
