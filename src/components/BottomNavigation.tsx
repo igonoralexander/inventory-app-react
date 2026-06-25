@@ -1,17 +1,17 @@
 import { Paper, BottomNavigation as MuiBottomNavigation, BottomNavigationAction, useTheme } from '@mui/material';
-import { LayoutGrid, Package, BarChart2, MoreHorizontal, Archive } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { LayoutGrid, Package, Archive, MoreHorizontal } from 'lucide-react';
+import { NavLink, useLocation } from 'react-router-dom';
 
 const navItems = [
   { path: '/dashboard', label: 'Home', icon: <LayoutGrid /> },
-  { path: '/products', label: 'Inventory', icon: <Package /> },
+  { path: '/inventory', label: 'Inventory', icon: <Package /> },
   { path: '/inventory/record-purchase', label: 'Purchase', icon: <Archive /> },
-  { path: '/reports', label: 'Reports', icon: <BarChart2 /> },
   { path: '/more', label: 'More', icon: <MoreHorizontal /> },
 ];
 
 const BottomNavigation = () => {
     const theme = useTheme();
+    const location = useLocation();
 
     return (
         <Paper 
@@ -28,6 +28,7 @@ const BottomNavigation = () => {
         >
             <MuiBottomNavigation
                 showLabels
+                value={location.pathname}
                 sx={{ 
                     bgcolor: 'background.paper',
                     height: '64px',
@@ -38,6 +39,7 @@ const BottomNavigation = () => {
                         key={item.path}
                         component={NavLink}
                         to={item.path}
+                        value={item.path}
                         label={item.label}
                         icon={item.icon}
                         sx={{

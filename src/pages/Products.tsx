@@ -1,26 +1,26 @@
 import React, { useState, useMemo } from 'react';
 import {
     Box, Typography, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, IconButton, Chip,
-    useTheme, useMediaQuery, Grid, Card, CardActions, Avatar, InputAdornment, TextField, Fab, Tabs, Tab, Menu, MenuItem
+    useTheme, useMediaQuery, Grid, Card, CardContent, CardActions, Avatar, InputAdornment, TextField, Fab, Tabs, Tab, Menu, MenuItem
 } from '@mui/material';
 import {
     Plus, Edit, Trash, Archive, MoreVertical, Search, Filter, ChevronDown, Image as ImageIcon, X
 } from 'lucide-react';
 import ProductForm from '../components/products/ProductForm';
-import ConfirmationDialog from '../components/ConfirmationDialog';
-import EmptyState from '../components/EmptyState';
+import ConfirmationDialog from '../components/ConfirmationDialog'; // Assuming you'll create this
+import EmptyState from '../components/EmptyState'; // Assuming you'll create this
 import StyledAvatar from '../components/StyledAvatar';
 
 
 const mockProducts = [
-    { id: 1, name: 'Wireless Mouse', sku: 'WM-001', price: 25.99, stock: 150, lowStock: 20, status: 'In Stock', image: 'https://images.unsplash.com/photo-1615914690484-63c37ca45595?q=80&w=2670&auto=format&fit=crop' },
-    { id: 2, name: 'Mechanical Keyboard', sku: 'MK-001', price: 129.99, stock: 8, lowStock: 10, status: 'Low Stock', image: 'https://images.unsplash.com/photo-1618384887624-7635c7553f74?q=80&w=2670&auto=format&fit=crop' },
-    { id: 3, name: 'Standing Desk', sku: 'SD-001', price: 399.99, stock: 0, lowStock: 5, status: 'Out of Stock', image: '' },
-    { id: 4, name: 'Laptop Stand', sku: 'LS-001', price: 49.99, stock: 200, lowStock: 30, status: 'Archived', image: '' },
-    { id: 5, name: 'USB-C Hub', sku: 'UH-001', price: 79.99, stock: 120, lowStock: 25, status: 'In Stock', image: 'https://images.unsplash.com/photo-1581012784536-5d61483d5b4e?q=80&w=2670&auto=format&fit=crop' },
+    { id: 1, name: 'Wireless Mouse', sku: 'WM-001', category: 'Electronics', price: 25.99, stock: 150, lowStock: 20, status: 'In Stock', image: 'https://images.unsplash.com/photo-1615914690484-63c37ca45595?q=80&w=2670&auto=format&fit=crop' },
+    { id: 2, name: 'Mechanical Keyboard', sku: 'MK-001', category: 'Electronics', price: 129.99, stock: 8, lowStock: 10, status: 'Low Stock', image: 'https://images.unsplash.com/photo-1618384887624-7635c7553f74?q=80&w=2670&auto=format&fit=crop' },
+    { id: 3, name: 'Standing Desk', sku: 'SD-001', category: 'Furniture', price: 399.99, stock: 0, lowStock: 5, status: 'Out of Stock', image: '' },
+    { id: 4, name: 'Laptop Stand', sku: 'LS-001', category: 'Accessories', price: 49.99, stock: 200, lowStock: 30, status: 'Archived', image: '' },
+    { id: 5, name: 'USB-C Hub', sku: 'UH-001', category: 'Electronics', price: 79.99, stock: 120, lowStock: 25, status: 'In Stock', image: 'https://images.unsplash.com/photo-1581012784536-5d61483d5b4e?q=80&w=2670&auto=format&fit=crop' },
 ];
 
-const ProductList = () => {
+const Products = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     const [products, setProducts] = useState(mockProducts);
@@ -30,6 +30,7 @@ const ProductList = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filter, setFilter] = useState('All Products');
+    const [category, setCategory] = useState('All');
     const [anchorEl, setAnchorEl] = useState(null);
 
 
@@ -100,11 +101,15 @@ const ProductList = () => {
                 if (filter === 'All Products') return true;
                 return statusInfo.label === filter;
             })
+            .filter(p => category === 'All' || p.category === category)
             .filter(p =>
                 p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 p.sku.toLowerCase().includes(searchTerm.toLowerCase())
             );
-    }, [products, searchTerm, filter]);
+    }, [products, searchTerm, filter, category]);
+
+
+    const categories = ['All', ...new Set(mockProducts.map(p => p.category))];
 
     if (products.length === 0 && !isMobile) {
         return <EmptyState
@@ -133,7 +138,7 @@ const ProductList = () => {
             {/* Filters and Search */}
             <Paper sx={{ p: 2, mb: 3, borderRadius: 4, position: 'sticky', top: 70, zIndex: 10, backdropFilter: 'blur(8px)', backgroundColor: 'rgba(255,255,255,0.8)' }}>
                 <Grid container spacing={2} alignItems="center">
-                    <Grid item xs={12} md={8}>
+                    <Grid item xs={12} md={6}>
                         <TextField
                             fullWidth
                             variant="outlined"
@@ -146,10 +151,15 @@ const ProductList = () => {
                             }}
                         />
                     </Grid>
-                    <Grid item xs={12} md={4}>
-                         <Tabs value={filter} onChange={(e, newValue) => setFilter(newValue)} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
+                    <Grid item xs={12} md={6}>
+                        <Box sx={{ display: 'flex', justifyContent: { xs: 'space-between', md: 'flex-end' }, gap: 1 }}>
+                            <Tabs value={filter} onChange={(e, newValue) => setFilter(newValue)} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
                                 {['All Products', 'In Stock', 'Low Stock', 'Out of Stock', 'Archived'].map(f => <Tab key={f} label={f} value={f} sx={{ textTransform: 'none', fontWeight: 600, borderRadius: 2, mr: 1, minHeight: 48 }} />)}
                             </Tabs>
+                            <TextField select value={category} onChange={e => setCategory(e.target.value)} SelectProps={{ IconComponent: ChevronDown }} sx={{ minWidth: 150, '.MuiOutlinedInput-root': { borderRadius: 3, bgcolor: 'background.paper' } }}>
+                                {categories.map(cat => <MenuItem key={cat} value={cat}>{cat}</MenuItem>)}
+                            </TextField>
+                        </Box>
                     </Grid>
                 </Grid>
             </Paper>
@@ -166,7 +176,7 @@ const ProductList = () => {
                                     {product.image ? <Avatar src={product.image} variant="rounded" sx={{ width: 72, height: 72, mr: 2 }} /> : <StyledAvatar name={product.name} variant="rounded" sx={{ width: 72, height: 72, mr: 2 }} />}
                                     <Box sx={{ flexGrow: 1 }}>
                                         <Typography sx={{ fontWeight: 'bold', mb: 0.5 }}>{product.name}</Typography>
-                                        <Typography variant="body2" color="text.secondary">SKU: {product.sku} &bull; ${product.price.toFixed(2)}</Typography>
+                                        <Typography variant="body2" color="text.secondary">{product.category} &bull; ${product.price.toFixed(2)}</Typography>
                                         <Chip label={status.label} color={status.color} size="small" sx={{ mt: 1, fontWeight: 'bold' }} />
                                     </Box>
                                     <IconButton onClick={(e) => handleMenuClick(e, product)}><MoreVertical /></IconButton>
@@ -183,6 +193,7 @@ const ProductList = () => {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Product</TableCell>
+                                <TableCell>Category</TableCell>
                                 <TableCell>Price</TableCell>
                                 <TableCell>Stock</TableCell>
                                 <TableCell>Status</TableCell>
@@ -203,6 +214,7 @@ const ProductList = () => {
                                                 </Box>
                                             </Box>
                                         </TableCell>
+                                        <TableCell>{product.category}</TableCell>
                                         <TableCell>${product.price.toFixed(2)}</TableCell>
                                         <TableCell>{product.stock}</TableCell>
                                         <TableCell><Chip label={status.label} color={status.color} size="small" sx={{ fontWeight: 'bold' }} /></TableCell>
@@ -256,4 +268,4 @@ const ProductList = () => {
     );
 };
 
-export default ProductList;
+export default Products;

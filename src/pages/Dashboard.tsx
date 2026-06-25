@@ -13,15 +13,17 @@ import {
   FileText,
   List,
   ChevronRight,
-  Box as BoxIcon
+  Box as BoxIcon,
+  DollarSign
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import StyledAvatar from '../components/StyledAvatar';
+
 
 // MOCK DATA (Price Removed)
 const summaryData = [
     { title: 'Total Products', value: '890', icon: BoxIcon, color: '#6366f1', path: '/products' },
+    { title: 'Total Sales', value: '$12,450', icon: DollarSign, color: '#10b981', path: '/sales' },
     { title: 'Products In Stock', value: '750', icon: Archive, color: '#0ea5e9', path: '/inventory' },
     { title: 'Low Stock Items', value: '45', icon: AlertTriangle, color: '#f97316', path: '/inventory/low-stock' },
     { title: 'Out of Stock', value: '12', icon: XCircle, color: '#dc2626', path: '/inventory/out-of-stock' },
@@ -119,7 +121,7 @@ const Dashboard = () => {
         <Box sx={{ p: { xs: 2, md: 3 } }}>
             <motion.div custom={1} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS}>
                  <Box sx={{ mb: 4, mt: 3 }}>
-                    <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Good Morning, Administrator</Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 'bold' }}>Welcome back, Administrator</Typography>
                     <Typography variant="body1" color="text.secondary">Here's a summary of today's business activity.</Typography>
                 </Box>
             </motion.div>
@@ -161,7 +163,7 @@ const Dashboard = () => {
                             </Box>
                             {lowStockItems.slice(0, 5).map(item => (
                             <Box key={item.id} sx={{ display: 'flex', alignItems: 'center', mb: 1.5, p: 1.5, borderRadius: 3, transition: 'background-color 0.2s', '&:hover': { bgcolor: 'action.hover' } }}>
-                                {item.image ? <Avatar src={item.image} variant="rounded" sx={{ width: 48, height: 48, mr: 2 }} /> : <StyledAvatar name={item.name} variant="rounded" sx={{ width: 48, height: 48, mr: 2 }} />}
+                                <Avatar src={item.image} variant="rounded" sx={{ width: 48, height: 48, mr: 2 }} />
                                 <Box flexGrow={1}>
                                     <Typography sx={{ fontWeight: 600 }}>{item.name}</Typography>
                                     <Typography variant="body2" color="text.secondary">
@@ -184,7 +186,7 @@ const Dashboard = () => {
                             </Box>
                              {topSellingProducts.map(prod => (
                                 <Box key={prod.id} sx={{ display: 'flex', alignItems: 'center', mb: 2, ':last-child': {mb: 0} }}>
-                                    {prod.image ? <Avatar src={prod.image} variant="rounded" sx={{ width: 48, height: 48, mr: 2 }} /> : <StyledAvatar name={prod.name} variant="rounded" sx={{ width: 48, height: 48, mr: 2 }} />}
+                                   <Avatar src={prod.image} variant="rounded" sx={{ width: 48, height: 48, mr: 2 }} />
                                     <Box flexGrow={1} sx={{ mr: 2 }}>
                                         <Typography sx={{ fontWeight: 600 }}>{prod.name}</Typography>
                                         <LinearProgress variant="determinate" value={prod.popularity} sx={{height: 6, borderRadius: 3, mt: 0.5}}/>

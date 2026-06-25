@@ -18,7 +18,7 @@ const Registration = lazy(() => import('./pages/Registration'));
 const ProductList = lazy(() => import('./pages/ProductList'));
 const AddProduct = lazy(() => import('./pages/AddProduct'));
 const EditProduct = lazy(() => import('./pages/EditProduct'));
-const RecordPurchase = lazy(() => import('./pages/RecordPurchase'));
+const Inventory = lazy(() => import('./pages/Inventory'));
 const RecordSale = lazy(() => import('./pages/RecordSale'));
 
 // A fallback loader component to show while pages are loading
@@ -43,13 +43,12 @@ const App = () => {
               <Route path="/products" element={<ProductList />} />
               <Route path="/products/add" element={<AddProduct />} />
               <Route path="/products/edit/:id" element={<EditProduct />} />
-              <Route path="/inventory/record-purchase" element={<RecordPurchase />} />
+              <Route path="/inventory" element={<Inventory />} />
               <Route path="/sales" element={<Sales />} />
               <Route path="/sales/record" element={<RecordSale />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/more" element={<More />} />
               <Route path="/settings" element={<Settings />} />
-              <Route path="/inventory" element={<Navigate to="/products" replace />} />
             </Route>
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

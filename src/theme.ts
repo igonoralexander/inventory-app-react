@@ -1,6 +1,7 @@
+
 import { createTheme } from '@mui/material/styles';
 
-const theme = createTheme({
+ const theme = createTheme({
   palette: {
     primary: {
       main: '#2563EB', // Blue for primary actions
@@ -37,15 +38,45 @@ const theme = createTheme({
       styleOverrides: {
         body: {
           backgroundColor: '#F3F4F6',
-          '&::-webkit-scrollbar, & *::-webkit-scrollbar': {
-            display: 'none',
-          },
-          '&, & * ': {
-            scrollbarWidth: 'none',
-            '-ms-overflow-style': 'none',
-          },
+        }
+      }
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: '8px',
+          textTransform: 'none',
+          fontWeight: 600,
         },
-      },
+        contained: {
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: 'none',
+          }
+        }
+      }
+    },
+    MuiPaper: {
+        styleOverrides: {
+            root: {
+                boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.05), 0px 1px 2px rgba(0, 0, 0, 0.1)',
+            }
+        }
+    },
+    MuiTableHead: {
+        styleOverrides: {
+            root: {
+                backgroundColor: '#F9FAFB',
+            }
+        }
+    },
+    MuiTableCell: {
+        styleOverrides: {
+            head: {
+                fontWeight: 'bold',
+                color: '#4B5563',
+            }
+        }
     },
   },
 });
