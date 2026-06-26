@@ -121,6 +121,13 @@ Modernize all tables.
 
 ## Recent Changes
 
+### Add Product Page Enhancements
+
+*   **Functional Back Button:** The back button on the `AddProduct` page is now fully functional, allowing users to easily navigate to the previous page.
+*   **Redesigned Form:** The `AddProduct` page has been redesigned to align with the modern aesthetic of the `Login` page. It now features a cleaner, centered layout that improves usability.
+*   **Image Upload:** The image input field has been updated from a simple URL field to a more intuitive file upload button. Users can now browse for and select image files directly from their device.
+*   **Improved Spacing:** Added top and bottom spacing to the `AddProduct` page to prevent the form from being obscured by the header and bottom navigation bar.
+
 ### Performance Enhancements
 
 *   **Dashboard Loading:**
@@ -161,9 +168,10 @@ Modernize all tables.
 *   **Product Cards (Grid View):**
     *   **Responsiveness:** 3 cards per row on desktop, 2 on tablet, and 1 on mobile.
     *   **Styling:** White background, rounded corners (`16px`), and soft shadows for a "lifted" look.
+    *   **UI Refinement:** Removed the category text from the product cards to create a cleaner and more focused design.
     *   **Content:**
         *   **Avatar:** Circular avatar in the top-left. Displays the product image if available; otherwise, generates an avatar from the product name's initials with a soft pastel background.
-        *   **Details:** Product Name, Category, and SKU.
+        *   **Details:** Product Name and SKU.
         *   **Actions:** A three-dot overflow menu in the top-right corner for actions like Edit or Delete.
         *   **Stock Status Bar:** A full-width bar at the bottom of the card indicating stock status:
             *   **Labels:** "🟢 In Stock", "🟡 Low Stock", "🔴 Out of Stock".
@@ -174,7 +182,7 @@ Modernize all tables.
     *   A modern pagination control is centered at the bottom of the page to navigate through product lists.
 
 *   **Back Button:**
-    *   Added a back button to the `Products` and `ProductList` pages to allow users to navigate back to the previous page.
+    *   Added a back button to the `Products`, `ProductList`, and `AddProduct` pages to allow users to navigate back to the previous page.
 
 *   **Bug Fixes:**
     *   Corrected an icon import error in both `Products` and `ProductList` pages.

@@ -57,8 +57,7 @@ const Products = () => {
     };
 
     const handleAddClick = () => {
-        setSelectedProduct(null);
-        setFormOpen(true);
+        navigate('/products/add');
     };
 
     const handleEditClick = (product: Product) => {
@@ -173,7 +172,6 @@ const Products = () => {
                                 </Box>
                                 <Box sx={{ mt: 2 }}>
                                     <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{product.name}</Typography>
-                                    <Typography variant="body2" color="text.secondary">{product.category}</Typography>
                                     <Typography variant="body2" color="text.secondary">SKU: {product.sku}</Typography>
                                 </Box>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2, p: 1, borderRadius: '12px', backgroundColor: status.bgColor }}>
