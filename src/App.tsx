@@ -1,6 +1,8 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { Box, CircularProgress } from '@mui/material';
+import { Toaster, toast } from 'react-hot-toast';
+import { AnimatePresence, motion } from 'framer-motion';
 import BottomNav from './components/BottomNavigation';
 import Header from './components/Header';
 
@@ -19,12 +21,27 @@ const Customers = lazy(() => import('./pages/Customers'));
 const Sales = lazy(() => import('./pages/Sales'));
 const More = lazy(() => import('./pages/More'));
 
+const AnimatedOutlet = () => {
+    const o = useLocation();
+    return (
+        <motion.div
+            key={o.pathname}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+        >
+            <Outlet />
+        </motion.div>
+    );
+};
+
 const ProtectedLayout = ({ handleLogout }) => {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Header handleLogout={handleLogout} />
             <Box component="main" sx={{ flexGrow: 1, p: 3, mt: '64px', mb: '56px' }}>
-                <Outlet />
+                <AnimatedOutlet />
             </Box>
             <BottomNav />
         </Box>
@@ -55,11 +72,13 @@ const App = () => {
   const handleLogin = () => {
     setIsLoggedIn(true);
     sessionStorage.setItem('isLoggedIn', 'true');
+    toast.success('Successfully logged in!');
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     sessionStorage.removeItem('isLoggedIn');
+    toast.success('Successfully logged out!');
   };
 
   if (showSplash) {
@@ -72,34 +91,37 @@ const App = () => {
 
   return (
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        <Suspense fallback={<LoadingFallback />}>
-            <Routes>
-              <Route path="/login" element={!isLoggedIn ? <Login handleLogin={handleLogin} /> : <Navigate to="/dashboard" />} />
-              <Route path="/register" element={!isLoggedIn ? <Registration /> : <Navigate to="/dashboard" />} />
-              <Route 
-                element={
-                  isLoggedIn ? (
-                    <ProtectedLayout handleLogout={handleLogout} />
-                  ) : (
-                    <Navigate to="/login" />
-                  )
-                }
-              >
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/inventory" element={<Inventory />} />
-                <Route path="/productlist" element={<ProductList />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/sales" element={<Sales />} />
-                <Route path="/customers" element={<Customers />} />
-                <Route path="/reports" element={<Reports />} />
-                <Route path="/more" element={<More />} />
-                <Route path="/products/add" element={<AddProduct />} />
-                <Route path="/inventory/record-purchase" element={<RecordPurchase />} />
-                <Route path="/sales/record" element={<RecordSale />} />
-              </Route>
-            </Routes>
-        </Suspense>
+          <Toaster position="top-center" reverseOrder={false} />
+          <AnimatePresence mode="wait">
+              <Suspense fallback={<LoadingFallback />}>
+                  <Routes>
+                      <Route path="/login" element={!isLoggedIn ? <Login handleLogin={handleLogin} /> : <Navigate to="/dashboard" />} />
+                      <Route path="/register" element={!isLoggedIn ? <Registration /> : <Navigate to="/dashboard" />} />
+                      <Route 
+                          element={
+                              isLoggedIn ? (
+                                  <ProtectedLayout handleLogout={handleLogout} />
+                              ) : (
+                                  <Navigate to="/login" />
+                              )
+                          }
+                      >
+                          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                          <Route path="/dashboard" element={<Dashboard />} />
+                          <Route path="/inventory" element={<Inventory />} />
+                          <Route path="/productlist" element={<ProductList />} />
+                          <Route path="/products" element={<Products />} />
+                          <Route path="/sales" element={<Sales />} />
+                          <Route path="/customers" element={<Customers />} />
+                          <Route path="/reports" element={<Reports />} />
+                          <Route path="/more" element={<More />} />
+                          <Route path="/products/add" element={<AddProduct />} />
+                          <Route path="/inventory/record-purchase" element={<RecordPurchase />} />
+                          <Route path="/sales/record" element={<RecordSale />} />
+                      </Route>
+                  </Routes>
+              </Suspense>
+          </AnimatePresence>
       </Router>
   );
 };

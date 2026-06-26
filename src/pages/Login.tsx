@@ -7,7 +7,7 @@ import {
   Mail, Lock, Eye, EyeOff
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import InventoryIcon from '@mui/icons-material/Inventory';
+import { Inventory as InventoryIcon } from '@mui/icons-material';
 
 const Login = ({ handleLogin }) => {
   const navigate = useNavigate();

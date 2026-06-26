@@ -55,14 +55,18 @@ const recentActivity = [
 ];
 
 // COMPONENTS
-const Card = ({ children, loading, ...props }) => {
+const Card = ({ children, sx, ...props }) => {
     const theme = useTheme();
     return (
-        <Paper sx={{ p: 2.5, borderRadius: 4, height: '100%', border: `1px solid ${theme.palette.divider}`, boxShadow: 'none', ...props.sx }}>
-            {loading ? <Skeleton variant="rounded" height="100%" /> : children}
-        </Paper>
+        <motion.div whileHover={{ y: -5, boxShadow: `0 10px 20px -5px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.08)'}` }} style={{height: '100%'}}>
+            <Paper sx={{ p: 2.5, borderRadius: 4, height: '100%', border: `1px solid ${theme.palette.divider}`, boxShadow: 'none', ...sx }} {...props}>
+                {children}
+            </Paper>
+        </motion.div>
     )
 }
+
+const CardSkeleton = () => <Skeleton variant="rounded" height={140} sx={{borderRadius: 4}}/>
 
 const SummaryCard = ({ item, loading }) => {
     const navigate = useNavigate();
@@ -70,10 +74,9 @@ const SummaryCard = ({ item, loading }) => {
     return (
         <motion.div
             onClick={() => navigate(item.path)}
-            whileHover={{ y: -5, boxShadow: '0 10px 20px -5px rgba(0,0,0,0.08)' }}
             style={{ height: '100%', cursor: 'pointer' }}
         >
-            <Card loading={loading} sx={{display: 'flex', flexDirection: 'column'}}>
+            <Card>
                 <Box sx={{ width: 40, height: 40, borderRadius: '50%', display: 'grid', placeItems: 'center', bgcolor: `${item.color}20`, mb: 1.5 }}>
                     <Icon size={24} color={item.color} />
                 </Box>
@@ -94,13 +97,11 @@ const QuickActionButton = ({ icon, text, loading, path }) => {
     const navigate = useNavigate();
     return (
         <Grid item xs={6} sm={4} md={2.4}>
-            {loading ? <Skeleton variant="rounded" height={56} /> : (
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} style={{height: '100%'}}>
-                     <Button onClick={() => navigate(path)} variant="outlined" fullWidth startIcon={icon} sx={{ borderRadius: 3, p: 2, height: '100%', flexDirection: 'column', justifyContent: 'center', borderColor: 'divider', color: 'text.primary', textTransform: 'none', fontWeight: 500 }}>
-                        {text}
-                    </Button>
-                </motion.div>
-            )}
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} style={{height: '100%'}}>
+                    <Button onClick={() => navigate(path)} variant="outlined" fullWidth startIcon={icon} sx={{ borderRadius: 3, p: 2, height: '100%', flexDirection: 'column', justifyContent: 'center', borderColor: 'divider', color: 'text.primary', textTransform: 'none', fontWeight: 500 }}>
+                    {text}
+                </Button>
+            </motion.div>
         </Grid>
     )
 }
@@ -116,6 +117,42 @@ const Dashboard = () => {
         hidden: { opacity: 0, y: 10 },
         visible: i => ({ opacity: 1, y: 0, transition: { delay: i * 0.05, duration: 0.3, ease: 'easeOut' }})
     };
+
+    if (loading) {
+        return (
+            <Box sx={{ p: { xs: 2, md: 3 } }}>
+                 <Box sx={{ mb: 4, mt: 3 }}>
+                    <Skeleton variant="text" width={300} height={40} />
+                    <Skeleton variant="text" width={400} height={20} />
+                </Box>
+                <Grid container spacing={2.5}>
+                    {Array.from(new Array(5)).map((_, i) => (
+                        <Grid item xs={6} sm={4} md={3} lg={2.4} key={i}>
+                           <CardSkeleton />
+                        </Grid>
+                    ))}
+                </Grid>
+                 <Box sx={{ my: 4 }}>
+                    <Skeleton variant="text" width={200} height={30} sx={{mb: 2}} />
+                    <Grid container spacing={2}>
+                        {Array.from(new Array(5)).map((_, i) => (
+                            <Grid item xs={6} sm={4} md={2.4} key={i}>
+                                <Skeleton variant="rounded" height={80} sx={{borderRadius: 3}}/>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Box>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={5}>
+                        <Skeleton variant="rounded" height={300} sx={{borderRadius: 4}}/>
+                    </Grid>
+                    <Grid item xs={12} md={7}>
+                         <Skeleton variant="rounded" height={300} sx={{borderRadius: 4}}/>
+                    </Grid>
+                </Grid>
+            </Box>
+        )
+    }
 
     return (
         <Box sx={{ p: { xs: 2, md: 3 } }}>
@@ -141,22 +178,18 @@ const Dashboard = () => {
                     <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>Quick Actions</Typography>
                 </motion.div>
                 <Grid container spacing={2}>
-                    {loading ? Array.from(new Array(5)).map((_, i) => <QuickActionButton key={i} loading={true} />) :
-                        <>
-                            <QuickActionButton key="add" icon={<PlusCircle size={20}/>} text="Add Product" path="/products/add" />
-                            <QuickActionButton key="purchase" icon={<Truck size={20}/>} text="Record Purchase" path="/inventory/record-purchase"/>
-                            <QuickActionButton key="sale" icon={<ShoppingCart size={20}/>} text="Record Sale" path="/sales/record" />
-                            <QuickActionButton key="inventory" icon={<List size={20}/>} text="View Inventory" path="/inventory" />
-                            <QuickActionButton key="reports" icon={<FileText size={20}/>} text="Reports" path="/reports" />
-                        </>
-                    }
+                    <QuickActionButton icon={<PlusCircle size={20}/>} text="Add Product" path="/products/add" />
+                    <QuickActionButton icon={<Truck size={20}/>} text="Record Purchase" path="/inventory/record-purchase"/>
+                    <QuickActionButton icon={<ShoppingCart size={20}/>} text="Record Sale" path="/sales/record" />
+                    <QuickActionButton icon={<List size={20}/>} text="View Inventory" path="/inventory" />
+                    <QuickActionButton icon={<FileText size={20}/>} text="Reports" path="/reports" />
                 </Grid>
             </Box>
 
             <Grid container spacing={3}>
                 <Grid item xs={12} md={5}>
                      <motion.div custom={8} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
-                        <Card loading={loading}>
+                        <Card>
                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Low Stock Alerts</Typography>
                                 <Button size="small" endIcon={<ChevronRight size={16}/>} sx={{ textTransform: 'none', fontWeight: 600 }}>View All</Button>
@@ -179,7 +212,7 @@ const Dashboard = () => {
                 
                  <Grid item xs={12} md={7}>
                     <motion.div custom={11} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
-                        <Card loading={loading}>
+                        <Card>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Top Selling Products</Typography>
                                 <Button size="small" endIcon={<ChevronRight size={16}/>} sx={{ textTransform: 'none', fontWeight: 600 }}>View All</Button>
@@ -204,7 +237,7 @@ const Dashboard = () => {
             <Grid container spacing={3} sx={{ mt: 1 }}>
                 <Grid item xs={12} md={6} lg={5}>
                     <motion.div custom={10} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
-                        <Card loading={loading}>
+                        <Card>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Recent Sales</Typography>
                                 <Button size="small" endIcon={<ChevronRight size={16}/>} sx={{ textTransform: 'none', fontWeight: 600 }}>View All</Button>
@@ -224,7 +257,7 @@ const Dashboard = () => {
                 
                 <Grid item xs={12} md={6} lg={7}>
                     <motion.div custom={12} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
-                        <Card loading={loading}>
+                        <Card>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Recent Activity</Typography>
                                 <Button size="small" endIcon={<ChevronRight size={16}/>} sx={{ textTransform: 'none', fontWeight: 600 }}>View All</Button>

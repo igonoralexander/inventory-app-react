@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Box, Button, Avatar, Badge, IconButton } from '@mui/material';
 import { LogOut, Bell } from 'lucide-react';
-import InventoryIcon from '@mui/icons-material/Inventory';
+import { Inventory as InventoryIcon } from '@mui/icons-material';
 
 const Header = ({ handleLogout }) => {
   const [randomImageId, setRandomImageId] = useState(1);
