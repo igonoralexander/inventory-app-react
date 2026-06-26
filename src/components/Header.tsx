@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Box, Button, Avatar, Badge, IconButton } from '@mui/material';
+import { AppBar, Toolbar, Typography, Box, Button, Avatar, Badge, IconButton, Tooltip } from '@mui/material';
 import { LogOut, Bell, RefreshCw } from 'lucide-react';
 import { Inventory as InventoryIcon } from '@mui/icons-material';
 
@@ -23,50 +23,58 @@ const Header = ({ handleLogout, handleRefresh }) => {
       }}
     >
       <Toolbar>
-        <Link to="/" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
-          <InventoryIcon sx={{ fontSize: 32, color: 'primary.main', mr: 1 }} />
-          <Typography variant="h6" noWrap component="div" sx={{ fontWeight:'bold', color: 'text.primary', display: { xs: 'none', sm: 'block' } }}>
-            Inventory
-          </Typography>
-        </Link>
+        <Tooltip title="Go to Dashboard" arrow>
+          <Link to="/" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
+            <InventoryIcon sx={{ fontSize: 32, color: 'primary.main', mr: 1 }} />
+            <Typography variant="h6" noWrap component="div" sx={{ fontWeight:'bold', color: 'text.primary', display: { xs: 'none', sm: 'block' } }}>
+              Inventory
+            </Typography>
+          </Link>
+        </Tooltip>
         
         <Box sx={{ flexGrow: 1 }} />
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 1.5 } }}>
-            <IconButton sx={{color: 'text.secondary'}}>
-                <Badge badgeContent={4} color="error">
-                    <Bell size={20} />
-                </Badge>
-            </IconButton>
+            <Tooltip title="View Notifications" arrow>
+              <IconButton sx={{color: 'text.secondary'}}>
+                  <Badge badgeContent={4} color="error">
+                      <Bell size={20} />
+                  </Badge>
+              </IconButton>
+            </Tooltip>
 
-            <IconButton sx={{color: 'text.secondary'}} onClick={handleRefresh}>
-                <RefreshCw size={20} />
-            </IconButton>
+            <Tooltip title="Refresh Page" arrow>
+              <IconButton sx={{color: 'text.secondary'}} onClick={handleRefresh}>
+                  <RefreshCw size={20} />
+              </IconButton>
+            </Tooltip>
         
           <Avatar alt="User Avatar" src={`https://i.pravatar.cc/150?img=${randomImageId}`} sx={{ width: 32, height: 32 }} />
           
-          <Button 
-            variant="outlined" 
-            onClick={handleLogout}
-            sx={{ 
-              textTransform: 'none', 
-              borderRadius: '12px',
-              borderColor: '#EAF0F6',
-              color: 'text.secondary',
-              minWidth: 'auto',
-              px: { xs: 1, sm: 2 },
-              py: 0.75,
-              '&:hover': {
-                backgroundColor: '#F4F7FC',
-                borderColor: '#E0E6F1',
-              }
-            }}
-          >
-            <LogOut size={16} />
-            <Typography component="span" sx={{ display: { xs: 'none', sm: 'inline' }, ml: 1}}>
-                Logout
-            </Typography>
-          </Button>
+          <Tooltip title="Logout" arrow>
+            <Button 
+              variant="outlined" 
+              onClick={handleLogout}
+              sx={{ 
+                textTransform: 'none', 
+                borderRadius: '12px',
+                borderColor: '#EAF0F6',
+                color: 'text.secondary',
+                minWidth: 'auto',
+                px: { xs: 1, sm: 2 },
+                py: 0.75,
+                '&:hover': {
+                  backgroundColor: '#F4F7FC',
+                  borderColor: '#E0E6F1',
+                }
+              }}
+            >
+              <LogOut size={16} />
+              <Typography component="span" sx={{ display: { xs: 'none', sm: 'inline' }, ml: 1}}>
+                  Logout
+              </Typography>
+            </Button>
+          </Tooltip>
         </Box>
       </Toolbar>
     </AppBar>

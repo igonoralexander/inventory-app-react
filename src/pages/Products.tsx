@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-    Box, Typography, Button, Paper, Grid, Avatar, InputAdornment, TextField, Fab, Tabs, Tab, Menu, MenuItem, IconButton, useTheme, useMediaQuery, Pagination, ToggleButtonGroup, ToggleButton, Card
+    Box, Typography, Button, Paper, Grid, Avatar, InputAdornment, TextField, Fab, Tabs, Tab, Menu, MenuItem, IconButton, useTheme, useMediaQuery, Pagination, ToggleButtonGroup, ToggleButton, Card, Tooltip
 } from '@mui/material';
 import { ArrowBack } from '@mui/icons-material';
 import type { ChipProps } from '@mui/material';
@@ -119,18 +119,26 @@ const Products = () => {
         <Box sx={{ backgroundColor: '#F8FAFC', minHeight: '100vh', p: '20px' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <IconButton onClick={() => navigate(-1)}>
-                        <ArrowBack />
-                    </IconButton>
+                    <Tooltip title="Go Back">
+                        <IconButton onClick={() => navigate(-1)}>
+                            <ArrowBack />
+                        </IconButton>
+                    </Tooltip>
                     <Box>
                         <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'text.primary' }}>Products</Typography>
                         <Typography variant="body1" color="text.secondary">Manage and track all your inventory items.</Typography>
                     </Box>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 2 }}>
-                    <IconButton><Search /></IconButton>
-                    <Button variant="outlined" startIcon={<Filter />}>Filter</Button>
-                    <Button variant="contained" startIcon={<Plus />} onClick={handleAddClick} sx={{ borderRadius: '12px' }}>Add Product</Button>
+                    <Tooltip title="Search Products">
+                        <IconButton><Search /></IconButton>
+                    </Tooltip>
+                    <Tooltip title="Filter Products">
+                        <Button variant="outlined" startIcon={<Filter />}>Filter</Button>
+                    </Tooltip>
+                    <Tooltip title="Add a new product">
+                        <Button variant="contained" startIcon={<Plus />} onClick={handleAddClick} sx={{ borderRadius: '12px' }}>Add Product</Button>
+                    </Tooltip>
                 </Box>
             </Box>
 
@@ -150,10 +158,16 @@ const Products = () => {
                         />
                     </Grid>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                        <Button variant="outlined">Sort</Button>
+                        <Tooltip title="Sort products">
+                            <Button variant="outlined">Sort</Button>
+                        </Tooltip>
                         <ToggleButtonGroup value={view} exclusive onChange={(_, newView) => setView(newView || 'grid')}>
-                            <ToggleButton value="grid"><LayoutGrid /></ToggleButton>
-                            <ToggleButton value="list"><List /></ToggleButton>
+                            <Tooltip title="Grid View">
+                                <ToggleButton value="grid"><LayoutGrid /></ToggleButton>
+                            </Tooltip>
+                            <Tooltip title="List View">
+                                <ToggleButton value="list"><List /></ToggleButton>
+                            </Tooltip>
                         </ToggleButtonGroup>
                     </Grid>
                 </Grid>
@@ -169,7 +183,9 @@ const Products = () => {
                                     <Avatar src={product.image || undefined} sx={{ width: 48, height: 48, bgcolor: 'primary.light' }}>
                                         {!product.image && product.name.substring(0, 2).toUpperCase()}
                                     </Avatar>
-                                    <IconButton size="small" onClick={(e) => handleMenuClick(e, product)}><MoreVertical size={20} /></IconButton>
+                                    <Tooltip title="More Actions">
+                                        <IconButton size="small" onClick={(e) => handleMenuClick(e, product)}><MoreVertical size={20} /></IconButton>
+                                    </Tooltip>
                                 </Box>
                                 <Box sx={{ mt: 2 }}>
                                     <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{product.name}</Typography>

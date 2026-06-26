@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, BottomNavigation as MuiBottomNavigation, BottomNavigationAction } from '@mui/material';
+import { Paper, BottomNavigation as MuiBottomNavigation, BottomNavigationAction, Tooltip } from '@mui/material';
 import { Home, Package, DollarSign, ClipboardList, MoreHorizontal } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
@@ -38,24 +38,25 @@ const BottomNavigation = () => {
                     }}
                 >
                     {navItems.map(item => (
-                        <BottomNavigationAction
-                            key={item.path}
-                            component={NavLink}
-                            to={item.path}
-                            value={item.path}
-                            label={item.label}
-                            icon={item.icon}
-                            sx={{
-                                '&.active': {
-                                    color: theme.palette.primary.main,
-                                },
-                                color: theme.palette.text.secondary,
-                                // This will apply the active color to the icon as well
-                                '&.active > .MuiBottomNavigationAction-label': {
-                                    color: theme.palette.primary.main,
-                                },
-                            }}
-                        />
+                        <Tooltip title={item.label} key={item.path} arrow>
+                            <BottomNavigationAction
+                                component={NavLink}
+                                to={item.path}
+                                value={item.path}
+                                label={item.label}
+                                icon={item.icon}
+                                sx={{
+                                    '&.active': {
+                                        color: theme.palette.primary.main,
+                                    },
+                                    color: theme.palette.text.secondary,
+                                    // This will apply the active color to the icon as well
+                                    '&.active > .MuiBottomNavigationAction-label': {
+                                        color: theme.palette.primary.main,
+                                    },
+                                }}
+                            />
+                        </Tooltip>
                     ))}
                 </MuiBottomNavigation>
             </Paper>

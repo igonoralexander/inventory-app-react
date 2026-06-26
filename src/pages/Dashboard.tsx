@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
-  Box, Typography, Grid, Paper, Avatar, IconButton, useTheme, Skeleton, Button, LinearProgress
+  Box, Typography, Grid, Paper, Avatar, IconButton, useTheme, Skeleton, Button, LinearProgress, Tooltip
 } from '@mui/material';
 import {
   Archive,
@@ -21,7 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import ProductForm from '../components/products/ProductForm';
 
 
-// MOCK DATA (Price Removed)
+// MOCK DATA
 const summaryData = [
     { title: 'Total Products', value: '890', icon: BoxIcon, color: '#6366f1', path: '/products' },
     { title: 'Total Sales', value: '$12,450', icon: DollarSign, color: '#10b981', path: '/sales' },
@@ -92,14 +92,16 @@ const SummaryCard = ({ item }) => {
     );
 };
 
-const QuickActionButton = ({ icon, text, onClick }) => {
+const QuickActionButton = ({ icon, text, onClick, tooltip }) => {
     return (
         <Grid item xs={6} sm={4} md={2.4}>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} style={{height: '100%'}}>
-                <Button onClick={onClick} variant="outlined" fullWidth startIcon={icon} sx={{ borderRadius: 3, p: 2, height: '100%', flexDirection: 'column', justifyContent: 'center', borderColor: 'divider', color: 'text.primary', textTransform: 'none', fontWeight: 500 }}>
-                    {text}
-                </Button>
-            </motion.div>
+            <Tooltip title={tooltip} arrow>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} style={{height: '100%'}}>
+                    <Button onClick={onClick} variant="outlined" fullWidth startIcon={icon} sx={{ borderRadius: 3, p: 2, height: '100%', flexDirection: 'column', justifyContent: 'center', borderColor: 'divider', color: 'text.primary', textTransform: 'none', fontWeight: 500 }}>
+                        {text}
+                    </Button>
+                </motion.div>
+            </Tooltip>
         </Grid>
     )
 }
@@ -141,11 +143,11 @@ const Dashboard = () => {
                     <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>Quick Actions</Typography>
                 </motion.div>
                 <Grid container spacing={2}>
-                    <QuickActionButton icon={<PlusCircle size={20}/>} text="Add Product" onClick={() => setFormOpen(true)} />
-                    <QuickActionButton icon={<Truck size={20}/>} text="Record Purchase" onClick={() => navigate("/inventory/record-purchase")} />
-                    <QuickActionButton icon={<ShoppingCart size={20}/>} text="Record Sale" onClick={() => navigate("/sales/record")} />
-                    <QuickActionButton icon={<List size={20}/>} text="View Inventory" onClick={() => navigate("/inventory")} />
-                    <QuickActionButton icon={<FileText size={20}/>} text="Reports" onClick={() => navigate("/reports")} />
+                    <QuickActionButton icon={<PlusCircle size={20}/>} text="Add Product" onClick={() => setFormOpen(true)} tooltip="Add a new product to your inventory" />
+                    <QuickActionButton icon={<Truck size={20}/>} text="Record Purchase" onClick={() => navigate("/inventory/record-purchase")} tooltip="Record a new purchase of stock" />
+                    <QuickActionButton icon={<ShoppingCart size={20}/>} text="Record Sale" onClick={() => navigate("/sales/record")} tooltip="Record a new sale" />
+                    <QuickActionButton icon={<List size={20}/>} text="View Inventory" onClick={() => navigate("/inventory")} tooltip="View your full inventory" />
+                    <QuickActionButton icon={<FileText size={20}/>} text="Reports" onClick={() => navigate("/reports")} tooltip="View sales and inventory reports" />
                 </Grid>
             </Box>
 
