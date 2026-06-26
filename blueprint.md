@@ -138,7 +138,6 @@ Modernize all tables.
 *   **Search & Filtering:**
     *   A prominent search bar with the placeholder "Search by product name, SKU...".
     *   Controls for sorting and toggling between Grid and List views.
-    *   Horizontally scrollable category chips for filtering (e.g., All Products, Electronics, Fashion). The selected chip is highlighted.
 
 *   **Product Cards (Grid View):**
     *   **Responsiveness:** 3 cards per row on desktop, 2 on tablet, and 1 on mobile.
@@ -152,10 +151,13 @@ Modernize all tables.
             *   **Colors:** Subtle green, orange, or red tinted backgrounds.
             *   **Quantity:** Displays the exact quantity (e.g., "Qty: 45").
 
-*   **Floating Action Button (FAB):**
-    *   A circular blue "+" button is fixed to the bottom-right corner for quick access to add a new product.
-    *   Includes a soft shadow and hover animations.
-
 *   **Pagination:**
     *   A modern pagination control is centered at the bottom of the page to navigate through product lists.
+
+*   **Back Button:**
+    *   Added a back button to the `Products` and `ProductList` pages to allow users to navigate back to the previous page.
+
+*   **Bug Fixes:**
+    *   Corrected an icon import error in both `Products` and `ProductList` pages.
+    *   Corrected an icon import error in the `Login` page.
 

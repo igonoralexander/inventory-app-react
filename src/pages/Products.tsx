@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     Box, Typography, Button, Paper, Grid, Avatar, InputAdornment, TextField, Fab, Tabs, Tab, Menu, MenuItem, IconButton, useTheme, useMediaQuery, Pagination, ToggleButtonGroup, ToggleButton, Card
 } from '@mui/material';
+import { ArrowBack } from '@mui/icons-material';
 import type { ChipProps } from '@mui/material';
 import {
     Plus, MoreVertical, Search, Filter, LayoutGrid, List
@@ -35,13 +37,13 @@ const mockProducts: Product[] = [
 const Products = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const navigate = useNavigate();
     const [products, setProducts] = useState<Product[]>(mockProducts);
     const [formOpen, setFormOpen] = useState(false);
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [productToDelete, setProductToDelete] = useState<Product | null>(null);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const [category, setCategory] = useState('All Products');
     const [view, setView] = useState<'grid' | 'list'>('grid');
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -98,13 +100,11 @@ const Products = () => {
     };
 
     const filteredProducts = useMemo(() => {
-        return products
-            .filter(p => category === 'All Products' || p.category === category)
-            .filter(p =>
-                p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                p.sku.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-    }, [products, searchTerm, category]);
+        return products.filter(p =>
+            p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p.sku.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }, [products, searchTerm]);
 
     if (products.length === 0 && !isMobile) {
         return <EmptyState
@@ -118,9 +118,14 @@ const Products = () => {
     return (
         <Box sx={{ backgroundColor: '#F8FAFC', minHeight: '100vh', p: '20px' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Box>
-                    <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'text.primary' }}>Products</Typography>
-                    <Typography variant="body1" color="text.secondary">Manage and track all your inventory items.</Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <IconButton onClick={() => navigate(-1)}>
+                        <ArrowBack />
+                    </IconButton>
+                    <Box>
+                        <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'text.primary' }}>Products</Typography>
+                        <Typography variant="body1" color="text.secondary">Manage and track all your inventory items.</Typography>
+                    </Box>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 2 }}>
                     <IconButton><Search /></IconButton>
@@ -152,9 +157,6 @@ const Products = () => {
                         </ToggleButtonGroup>
                     </Grid>
                 </Grid>
-                <Tabs value={category} onChange={(_, newValue) => setCategory(newValue)} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile sx={{ mt: 2 }}>
-                    {['All Products', 'Electronics', 'Home & Kitchen', 'Fashion', 'Beauty', 'Hardware', 'Appliances'].map(c => <Tab key={c} label={c} value={c} sx={{ textTransform: 'none', borderRadius: '8px', '&.Mui-selected': { backgroundColor: 'primary.main', color: 'white' } }} />)}
-                </Tabs>
             </Paper>
 
             <Grid container spacing={2}>
@@ -187,10 +189,6 @@ const Products = () => {
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
                 <Pagination count={14} page={3} />
             </Box>
-
-            <Fab color="primary" sx={{ position: 'fixed', bottom: 32, right: 32, borderRadius: '50%' }} onClick={handleAddClick}>
-                <Plus />
-            </Fab>
 
             <ProductForm
                 open={formOpen}

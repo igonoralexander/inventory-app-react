@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
     Box, Typography, Button, Paper, Grid, Avatar, InputAdornment, TextField, Fab, Tabs, Tab, Menu, MenuItem, IconButton, useTheme, useMediaQuery, Pagination, ToggleButtonGroup, ToggleButton, Card
 } from '@mui/material';
+import { ArrowBack } from '@mui/icons-material';
 import type { ChipProps } from '@mui/material';
 import {
     Plus, MoreVertical, Search, Filter, LayoutGrid, List
@@ -35,6 +37,7 @@ const mockProducts: Product[] = [
 const ProductList = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const navigate = useNavigate();
     const [products, setProducts] = useState<Product[]>(mockProducts);
     const [formOpen, setFormOpen] = useState(false);
     const [confirmOpen, setConfirmOpen] = useState(false);
@@ -118,9 +121,14 @@ const ProductList = () => {
     return (
         <Box sx={{ backgroundColor: '#F8FAFC', minHeight: '100vh', p: '20px' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Box>
-                    <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'text.primary' }}>Products</Typography>
-                    <Typography variant="body1" color="text.secondary">Manage and track all your inventory items.</Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <IconButton onClick={() => navigate(-1)}>
+                        <ArrowBack />
+                    </IconButton>
+                    <Box>
+                        <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'text.primary' }}>Products</Typography>
+                        <Typography variant="body1" color="text.secondary">Manage and track all your inventory items.</Typography>
+                    </Box>
                 </Box>
                 <Box sx={{ display: 'flex', gap: 2 }}>
                     <IconButton><Search /></IconButton>
@@ -188,8 +196,9 @@ const ProductList = () => {
                 <Pagination count={14} page={3} />
             </Box>
 
-            <Fab color="primary" sx={{ position: 'fixed', bottom: 32, right: 32, borderRadius: '50%' }} onClick={handleAddClick}>
-                <Plus />
+            <Fab color="primary" sx={{ position: 'fixed', bottom: 82, left: '50%', transform: 'translateX(-50%)', borderRadius: '16px' }} onClick={handleAddClick} variant="extended">
+                <Plus style={{ marginRight: '8px' }}/>
+                Add Product
             </Fab>
 
             <ProductForm
