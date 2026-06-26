@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Box, Button, Avatar, Badge, IconButton } from '@mui/material';
-import { LogOut, Bell } from 'lucide-react';
+import { LogOut, Bell, RefreshCw } from 'lucide-react';
 import { Inventory as InventoryIcon } from '@mui/icons-material';
 
 const Header = ({ handleLogout }) => {
@@ -11,6 +11,10 @@ const Header = ({ handleLogout }) => {
     // Generate a random number between 1 and 70 for pravatar image
     setRandomImageId(Math.floor(Math.random() * 70) + 1);
   }, []); // Empty dependency array ensures this runs only once when the component mounts
+
+  const handleRefresh = () => {
+    window.location.reload();
+  };
 
   return (
     <AppBar 
@@ -37,6 +41,10 @@ const Header = ({ handleLogout }) => {
                 <Badge badgeContent={4} color="error">
                     <Bell size={20} />
                 </Badge>
+            </IconButton>
+
+            <IconButton sx={{color: 'text.secondary'}} onClick={handleRefresh}>
+                <RefreshCw size={20} />
             </IconButton>
         
           <Avatar alt="User Avatar" src={`https://i.pravatar.cc/150?img=${randomImageId}`} sx={{ width: 32, height: 32 }} />

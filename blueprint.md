@@ -119,7 +119,16 @@ Modernize all tables.
 
 ---
 
-## Current Change: Products Page Redesign
+## Recent Changes
+
+### Header Refresh Button
+
+*   **Refresh Button:**
+    *   Added a refresh icon button to the main header.
+    *   This provides a way to reload the application, which is essential for environments where a browser refresh is not available (e.g., mobile or desktop apps).
+    *   The button is placed before the user avatar and logout button for easy access.
+
+### Products Page Redesign
 
 **Objective:** Redesign the existing Products page to create a clean, modern, premium SaaS interface similar to industry-leading applications like Linear and Stripe. The focus is on improving the visual design and user experience while maintaining all existing functionality.
 
