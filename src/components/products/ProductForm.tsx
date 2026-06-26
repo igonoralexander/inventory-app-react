@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Grid, Box, InputAdornment, Typography, Avatar
+    Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Grid, Box, InputAdornment, Typography, Avatar, IconButton, useTheme
 } from '@mui/material';
 import {
-    Package, Hash, DollarSign, Archive, AlertTriangle, Image as ImageIcon, Link2
+    Package, Hash, UploadCloud, X
 } from 'lucide-react';
 
 const ProductForm = ({ open, handleClose, handleSubmit, product }) => {
+    const theme = useTheme();
     const [formData, setFormData] = useState({ name: '', sku: '', price: '', stock: '', lowStock: '', image: '' });
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
 
     useEffect(() => {
         if (product) {
             setFormData(product);
+            if (product.image) {
+                setImagePreview(product.image);
+            }
         } else {
             setFormData({ name: '', sku: '', price: '', stock: '', lowStock: '', image: '' });
+            setImagePreview(null);
         }
     }, [product, open]);
 
@@ -21,24 +27,51 @@ const ProductForm = ({ open, handleClose, handleSubmit, product }) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setFormData({ ...formData, image: reader.result as string });
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const onFormSubmit = () => {
         handleSubmit(formData);
     };
 
     return (
-        <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth PaperProps={{ sx: { borderRadius: 4 } }}>
-            <DialogTitle sx={{ fontWeight: 'bold', fontSize: '1.5rem', p: 3 }}>{product ? 'Edit Product' : 'Add Product'}</DialogTitle>
-            <DialogContent sx={{ p: 3 }}>
+        <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 4, position: 'relative' } }}>
+            <IconButton
+                aria-label="close"
+                onClick={handleClose}
+                sx={{
+                    position: 'absolute',
+                    right: 16,
+                    top: 16,
+                    color: (theme) => theme.palette.grey[500],
+                }}
+            >
+                <X />
+            </IconButton>
+            <DialogTitle sx={{ fontWeight: 'bold', fontSize: '1.75rem', p: 3, color: 'text.primary' }}>
+                {product ? 'Edit Product' : 'Add Product'}
+            </DialogTitle>
+            <DialogContent sx={{ p: 3, pt: 1 }}>
                 <Grid container spacing={3}>
                     {/* Left side: Main details */}
-                    <Grid item xs={12} md={8}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    <Grid item xs={12}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, pt: 1 }}>
                             <TextField
                                 label="Product Name"
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
                                 fullWidth
+                                required
                                 InputProps={{ startAdornment: <InputAdornment position="start"><Package size={20} /></InputAdornment> }}
                             />
                             <TextField
@@ -52,71 +85,41 @@ const ProductForm = ({ open, handleClose, handleSubmit, product }) => {
                         </Box>
                     </Grid>
                     {/* Right side: Image upload */}
-                    <Grid item xs={12} md={4}>
-                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', border: '2px dashed', borderColor: 'divider', borderRadius: 3, p: 2, bgcolor: 'background.default' }}>
-                            {formData.image ? (
-                                <Avatar src={formData.image} variant="rounded" sx={{ width: 150, height: 150, mb: 2 }} />
-                            ) : (
-                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: 'text.secondary' }}>
-                                    <ImageIcon size={48} />
-                                    <Typography sx={{mt: 1}}>Product Image</Typography>
-                                </Box>
-                            )}
-                             <TextField
-                                label="Image URL"
-                                name="image"
-                                value={formData.image}
-                                onChange={handleChange}
-                                fullWidth
-                                size="small"
-                                sx={{mt: 2}}
-                                InputProps={{ startAdornment: <InputAdornment position="start"><Link2 size={16} /></InputAdornment> }}
+                    <Grid item xs={12}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', border: '2px dashed', borderColor: 'divider', borderRadius: 3, p: 2, bgcolor: 'background.default', position: 'relative' }}>
+                            <input
+                                accept="image/*"
+                                style={{ display: 'none' }}
+                                id="image-upload-dialog-main"
+                                type="file"
+                                onChange={handleImageChange}
                             />
+                            <label htmlFor="image-upload-dialog-main" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', minHeight: 150 }}>
+                                {imagePreview ? (
+                                    <Avatar src={imagePreview} variant="rounded" sx={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                ) : (
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: 'text.secondary' }}>
+                                        <UploadCloud size={48} />
+                                        <Typography sx={{ mt: 2, fontWeight: 600 }}>Upload Image</Typography>
+                                    </Box>
+                                )}
+                            </label>
+                            {imagePreview && (
+                                <IconButton
+                                    size="small"
+                                    onClick={() => { setImagePreview(null); setFormData({ ...formData, image: '' }); }}
+                                    sx={{ position: 'absolute', top: 8, right: 8, background: 'rgba(255,255,255,0.8)', '&:hover': { background: 'rgba(255,255,255,1)' } }}
+                                >
+                                    <X size={16} />
+                                </IconButton>
+                            )}
                         </Box>
                     </Grid>
-                    
-                    {/* Bottom part: Stock and pricing */}
-                    <Grid item xs={12}><Typography variant="h6" sx={{ fontWeight: 'bold', mt: 2 }}>Inventory & Pricing</Typography></Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <TextField
-                            label="Selling Price"
-                            name="price"
-                            type="number"
-                            value={formData.price}
-                            onChange={handleChange}
-                            fullWidth
-                            InputProps={{ startAdornment: <InputAdornment position="start"><DollarSign size={20} /></InputAdornment> }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <TextField
-                            label="Current Stock"
-                            name="stock"
-                            type="number"
-                            value={formData.stock}
-                            onChange={handleChange}
-                            fullWidth
-                            InputProps={{ startAdornment: <InputAdornment position="start"><Archive size={20} /></InputAdornment> }}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6} md={3}>
-                        <TextField
-                            label="Low Stock Alert"
-                            name="lowStock"
-                            type="number"
-                            value={formData.lowStock}
-                            onChange={handleChange}
-                            fullWidth
-                            helperText="Receive alert when stock is at or below this level"
-                            InputProps={{ startAdornment: <InputAdornment position="start"><AlertTriangle size={20} /></InputAdornment> }}
-                        />
-                    </Grid>
-                   
                 </Grid>
             </DialogContent>
-            <DialogActions sx={{ p: 3 }}>
-                <Button onClick={handleClose} sx={{ borderRadius: 3 }} >Cancel</Button>
-                <Button onClick={onFormSubmit} variant="contained" sx={{ borderRadius: 3 }}>
+            <DialogActions sx={{ p: 3, pt: 2 }}>
+                <Button onClick={handleClose} sx={{ borderRadius: 3, px: 2 }} >Cancel</Button>
+                <Button onClick={onFormSubmit} variant="contained" sx={{ borderRadius: 3, px: 3 }}>
                     {product ? 'Save Changes' : 'Add Product'}
                 </Button>
             </DialogActions>

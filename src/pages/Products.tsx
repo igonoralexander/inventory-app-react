@@ -57,7 +57,8 @@ const Products = () => {
     };
 
     const handleAddClick = () => {
-        navigate('/products/add');
+        setSelectedProduct(null);
+        setFormOpen(true);
     };
 
     const handleEditClick = (product: Product) => {

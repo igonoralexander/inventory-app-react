@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import ProductForm from '../components/products/ProductForm';
 
 
 // MOCK DATA (Price Removed)
@@ -26,7 +27,7 @@ const summaryData = [
     { title: 'Total Sales', value: '$12,450', icon: DollarSign, color: '#10b981', path: '/sales' },
     { title: 'Products In Stock', value: '750', icon: Archive, color: '#0ea5e9', path: '/inventory' },
     { title: 'Low Stock Items', value: '45', icon: AlertTriangle, color: '#f97316', path: '/inventory/low-stock' },
-    { title: 'Out of Stock', value: '12', icon: XCircle, color: '#dc2626', path: '/inventory/out-of-stock' },
+    { title: 'Out of Stock Items', value: '12', icon: XCircle, color: '#dc2626', path: '/inventory/out-of-stock' },
 ];
 const lowStockItems = [
     { id: 1, name: 'Espresso Machine', image: '', currentQty: 8, minQty: 10 },
@@ -91,12 +92,11 @@ const SummaryCard = ({ item }) => {
     );
 };
 
-const QuickActionButton = ({ icon, text, path }) => {
-    const navigate = useNavigate();
+const QuickActionButton = ({ icon, text, onClick }) => {
     return (
         <Grid item xs={6} sm={4} md={2.4}>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} style={{height: '100%'}}>
-                    <Button onClick={() => navigate(path)} variant="outlined" fullWidth startIcon={icon} sx={{ borderRadius: 3, p: 2, height: '100%', flexDirection: 'column', justifyContent: 'center', borderColor: 'divider', color: 'text.primary', textTransform: 'none', fontWeight: 500 }}>
+                <Button onClick={onClick} variant="outlined" fullWidth startIcon={icon} sx={{ borderRadius: 3, p: 2, height: '100%', flexDirection: 'column', justifyContent: 'center', borderColor: 'divider', color: 'text.primary', textTransform: 'none', fontWeight: 500 }}>
                     {text}
                 </Button>
             </motion.div>
@@ -105,10 +105,17 @@ const QuickActionButton = ({ icon, text, path }) => {
 }
 
 const Dashboard = () => {
+    const navigate = useNavigate();
+    const [formOpen, setFormOpen] = useState(false);
     const FADE_IN_VARIANTS = {
         hidden: { opacity: 0, y: 10 },
         visible: i => ({ opacity: 1, y: 0, transition: { delay: i * 0.05, duration: 0.3, ease: 'easeOut' }})
     };
+    
+    const handleAddProduct = (product) => {
+        console.log('New Product:', product);
+        setFormOpen(false);
+    }
 
     return (
         <Box sx={{ p: { xs: 2, md: 3 } }}>
@@ -134,11 +141,11 @@ const Dashboard = () => {
                     <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>Quick Actions</Typography>
                 </motion.div>
                 <Grid container spacing={2}>
-                    <QuickActionButton icon={<PlusCircle size={20}/>} text="Add Product" path="/products/add" />
-                    <QuickActionButton icon={<Truck size={20}/>} text="Record Purchase" path="/inventory/record-purchase"/>
-                    <QuickActionButton icon={<ShoppingCart size={20}/>} text="Record Sale" path="/sales/record" />
-                    <QuickActionButton icon={<List size={20}/>} text="View Inventory" path="/inventory" />
-                    <QuickActionButton icon={<FileText size={20}/>} text="Reports" path="/reports" />
+                    <QuickActionButton icon={<PlusCircle size={20}/>} text="Add Product" onClick={() => setFormOpen(true)} />
+                    <QuickActionButton icon={<Truck size={20}/>} text="Record Purchase" onClick={() => navigate("/inventory/record-purchase")} />
+                    <QuickActionButton icon={<ShoppingCart size={20}/>} text="Record Sale" onClick={() => navigate("/sales/record")} />
+                    <QuickActionButton icon={<List size={20}/>} text="View Inventory" onClick={() => navigate("/inventory")} />
+                    <QuickActionButton icon={<FileText size={20}/>} text="Reports" onClick={() => navigate("/reports")} />
                 </Grid>
             </Box>
 
@@ -234,6 +241,13 @@ const Dashboard = () => {
                     </motion.div>
                 </Grid>
             </Grid>
+            
+            <ProductForm
+                open={formOpen}
+                handleClose={() => setFormOpen(false)}
+                handleSubmit={handleAddProduct}
+                product={null}
+            />
 
         </Box>
     );
