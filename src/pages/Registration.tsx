@@ -1,19 +1,36 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Box, Typography, TextField, Button, Paper, Avatar, Grid } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Paper,
+  IconButton,
+  InputAdornment,
+  useTheme
+} from '@mui/material';
+import { Mail, Lock, Eye, EyeOff, User } from 'lucide-react';
 import { motion } from 'framer-motion';
+import InventoryIcon from '@mui/icons-material/Inventory';
 
 const Registration = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically handle the registration logic
-    // For now, we will just navigate to the login page
+    if (password !== confirmPassword) {
+      alert("Passwords don't match.");
+      return;
+    }
+    console.log('Registering user:', { fullName, email });
     navigate('/login');
   };
 
@@ -21,12 +38,11 @@ const Registration = () => {
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100vh',
-        backgroundColor: 'background.default',
-        p: 2,
+        minHeight: '100vh',
+        background: `linear-gradient(180deg, ${theme.palette.background.default} 0%, #F0F4F8 100%)`,
+        p: { xs: 2, sm: 3 },
       }}
     >
       <motion.div
@@ -37,76 +53,118 @@ const Registration = () => {
         <Paper
           elevation={0}
           sx={{
-            p: 4,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            maxWidth: '400px',
+            p: { xs: 3, sm: 4 },
+            maxWidth: '420px',
             width: '100%',
             borderRadius: 4,
-            border: '1px solid #E2E8F0'
+            border: `1px solid ${theme.palette.divider}`,
+            textAlign: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5" sx={{ fontWeight: 'bold', color: 'text.primary' }}>
-            Sign up
+          <InventoryIcon sx={{ fontSize: 48, color: 'primary.main', mb: 1.5 }} />
+          <Typography variant="h5" component="h1" sx={{ fontWeight: 'bold', color: 'text.primary', mb: 0.5 }}>
+            Inventory Management System
           </Typography>
-          <Box component="form" onSubmit={handleRegister} sx={{ mt: 3, width: '100%' }}>
+          <Typography variant="h6" sx={{ color: 'text.primary', fontWeight: 'bold', mb: 1 }}>
+            Create Your Account
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary', mb: 4 }}>
+            Get started by creating a new account.
+          </Typography>
+
+          <Box component="form" onSubmit={handleRegister} noValidate>
             <TextField
-              margin="normal"
-              required
               fullWidth
-              id="email"
+              label="Full Name"
+              margin="normal"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <User size={20} />
+                  </InputAdornment>
+                ),
+                sx: { borderRadius: 3 }
+              }}
+            />
+            <TextField
+              fullWidth
               label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
+              margin="normal"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Mail size={20} />
+                  </InputAdornment>
+                ),
+                sx: { borderRadius: 3 }
+              }}
             />
             <TextField
-              margin="normal"
-              required
               fullWidth
-              name="password"
               label="Password"
-              type="password"
-              id="password"
-              autoComplete="new-password"
+              type={showPassword ? 'text' : 'password'}
+              margin="normal"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Lock size={20} />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+                sx: { borderRadius: 3 }
+              }}
             />
             <TextField
-              margin="normal"
-              required
               fullWidth
-              name="confirmPassword"
               label="Confirm Password"
-              type="password"
-              id="confirmPassword"
-              autoComplete="new-password"
+              type={showConfirmPassword ? 'text' : 'password'}
+              margin="normal"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Lock size={20} />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end">
+                      {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+                sx: { borderRadius: 3 }
+              }}
             />
+
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2, py: 1.5 }}
+              sx={{ mt: 2, mb: 2, borderRadius: 3, py: 1.5, textTransform: 'none', fontSize: '1rem' }}
             >
               Sign Up
             </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link to="/login">
-                  <Typography variant="body2" color="primary">
-                    Already have an account? Sign in
-                  </Typography>
-                </Link>
-              </Grid>
-            </Grid>
+
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              Already have an account?{' '}
+              <Link to="/login" style={{ textDecoration: 'none', color: theme.palette.primary.main, fontWeight: 500 }}>
+                Sign In
+              </Link>
+            </Typography>
           </Box>
         </Paper>
       </motion.div>
