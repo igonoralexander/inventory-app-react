@@ -4,17 +4,13 @@ import { AppBar, Toolbar, Typography, Box, Button, Avatar, Badge, IconButton } f
 import { LogOut, Bell, RefreshCw } from 'lucide-react';
 import { Inventory as InventoryIcon } from '@mui/icons-material';
 
-const Header = ({ handleLogout }) => {
+const Header = ({ handleLogout, handleRefresh }) => {
   const [randomImageId, setRandomImageId] = useState(1);
 
   useEffect(() => {
     // Generate a random number between 1 and 70 for pravatar image
     setRandomImageId(Math.floor(Math.random() * 70) + 1);
   }, []); // Empty dependency array ensures this runs only once when the component mounts
-
-  const handleRefresh = () => {
-    window.location.reload();
-  };
 
   return (
     <AppBar 

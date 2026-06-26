@@ -66,9 +66,7 @@ const Card = ({ children, sx, ...props }) => {
     )
 }
 
-const CardSkeleton = () => <Skeleton variant="rounded" height={140} sx={{borderRadius: 4}}/>
-
-const SummaryCard = ({ item, loading }) => {
+const SummaryCard = ({ item }) => {
     const navigate = useNavigate();
     const Icon = item.icon;
     return (
@@ -93,7 +91,7 @@ const SummaryCard = ({ item, loading }) => {
     );
 };
 
-const QuickActionButton = ({ icon, text, loading, path }) => {
+const QuickActionButton = ({ icon, text, path }) => {
     const navigate = useNavigate();
     return (
         <Grid item xs={6} sm={4} md={2.4}>
@@ -107,52 +105,10 @@ const QuickActionButton = ({ icon, text, loading, path }) => {
 }
 
 const Dashboard = () => {
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), 1500);
-        return () => clearTimeout(timer);
-    }, []);
-
     const FADE_IN_VARIANTS = {
         hidden: { opacity: 0, y: 10 },
         visible: i => ({ opacity: 1, y: 0, transition: { delay: i * 0.05, duration: 0.3, ease: 'easeOut' }})
     };
-
-    if (loading) {
-        return (
-            <Box sx={{ p: { xs: 2, md: 3 } }}>
-                 <Box sx={{ mb: 4, mt: 3 }}>
-                    <Skeleton variant="text" width={300} height={40} />
-                    <Skeleton variant="text" width={400} height={20} />
-                </Box>
-                <Grid container spacing={2.5}>
-                    {Array.from(new Array(5)).map((_, i) => (
-                        <Grid item xs={6} sm={4} md={3} lg={2.4} key={i}>
-                           <CardSkeleton />
-                        </Grid>
-                    ))}
-                </Grid>
-                 <Box sx={{ my: 4 }}>
-                    <Skeleton variant="text" width={200} height={30} sx={{mb: 2}} />
-                    <Grid container spacing={2}>
-                        {Array.from(new Array(5)).map((_, i) => (
-                            <Grid item xs={6} sm={4} md={2.4} key={i}>
-                                <Skeleton variant="rounded" height={80} sx={{borderRadius: 3}}/>
-                            </Grid>
-                        ))}
-                    </Grid>
-                </Box>
-                <Grid container spacing={3}>
-                    <Grid item xs={12} md={5}>
-                        <Skeleton variant="rounded" height={300} sx={{borderRadius: 4}}/>
-                    </Grid>
-                    <Grid item xs={12} md={7}>
-                         <Skeleton variant="rounded" height={300} sx={{borderRadius: 4}}/>
-                    </Grid>
-                </Grid>
-            </Box>
-        )
-    }
 
     return (
         <Box sx={{ p: { xs: 2, md: 3 } }}>
@@ -167,7 +123,7 @@ const Dashboard = () => {
                 {summaryData.map((item, index) => (
                     <Grid item xs={6} sm={4} md={3} lg={2.4} key={item.title}>
                         <motion.div custom={index + 2} initial="hidden" animate="visible" variants={FADE_IN_VARIANTS} style={{height: '100%'}}>
-                           <SummaryCard item={item} loading={loading} />
+                           <SummaryCard item={item} />
                         </motion.div>
                     </Grid>
                 ))}

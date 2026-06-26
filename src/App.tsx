@@ -37,10 +37,17 @@ const AnimatedOutlet = () => {
 };
 
 const ProtectedLayout = ({ handleLogout }) => {
+    const [refreshKey, setRefreshKey] = useState(0);
+
+    const handleRefresh = () => {
+        toast.success('Page Refreshed');
+        setRefreshKey(prevKey => prevKey + 1);
+    };
+
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <Header handleLogout={handleLogout} />
-            <Box component="main" sx={{ flexGrow: 1, p: 3, mt: '64px', mb: '56px' }}>
+            <Header handleLogout={handleLogout} handleRefresh={handleRefresh} />
+            <Box key={refreshKey} component="main" sx={{ flexGrow: 1, p: 3, mt: '64px', mb: '56px' }}>
                 <AnimatedOutlet />
             </Box>
             <BottomNav />
@@ -63,7 +70,7 @@ const App = () => {
         const timer = setTimeout(() => {
             setShowSplash(false);
             sessionStorage.setItem('splashShown', 'true');
-        }, 2000); // Reduced splash time to 2 seconds
+        }, 2000);
 
         return () => clearTimeout(timer);
     }

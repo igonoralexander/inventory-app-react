@@ -121,6 +121,16 @@ Modernize all tables.
 
 ## Recent Changes
 
+### Performance Enhancements
+
+*   **Dashboard Loading:**
+    *   Removed the artificial 1.5-second loading delay from the `Dashboard.tsx` component.
+    *   The dashboard now loads instantly, improving the user's perception of the application's speed.
+
+*   **Instant Refresh:**
+    *   The header's refresh button now provides an instant, seamless refresh of the page content.
+    *   Instead of a full-page reload, the refresh is handled by React, which re-renders only the necessary components, creating a much smoother user experience.
+
 ### Header Refresh Button
 
 *   **Refresh Button:**
