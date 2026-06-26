@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Box, Typography, Grid, Paper, Avatar, IconButton, useTheme, Skeleton, Button, LinearProgress
 } from '@mui/material';
@@ -146,7 +146,7 @@ const Dashboard = () => {
                             <QuickActionButton key="add" icon={<PlusCircle size={20}/>} text="Add Product" path="/products/add" />
                             <QuickActionButton key="purchase" icon={<Truck size={20}/>} text="Record Purchase" path="/inventory/record-purchase"/>
                             <QuickActionButton key="sale" icon={<ShoppingCart size={20}/>} text="Record Sale" path="/sales/record" />
-                            <QuickActionButton key="inventory" icon={<List size={20}/>} text="View Inventory" path="/products" />
+                            <QuickActionButton key="inventory" icon={<List size={20}/>} text="View Inventory" path="/inventory" />
                             <QuickActionButton key="reports" icon={<FileText size={20}/>} text="Reports" path="/reports" />
                         </>
                     }

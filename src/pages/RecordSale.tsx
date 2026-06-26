@@ -3,6 +3,7 @@ import { Box, Typography, TextField, Button, Grid, Paper, Autocomplete } from '@
 import { ShoppingCart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import PageHeader from '../components/PageHeader';
 
 // Mock data for products
 const products = [
@@ -24,10 +25,7 @@ const RecordSale = () => {
   return (
     <motion.div initial="hidden" animate="visible" variants={FADE_IN_VARIANTS}>
       <Box>
-        <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 3 }}>
-          Record New Sale
-        </Typography>
-
+        <PageHeader title="Record Sale" />
         <Paper sx={{ p: {xs: 2, md: 4}, borderRadius: 4, border: theme => `1px solid ${theme.palette.divider}` }}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={8}>
@@ -43,16 +41,8 @@ const RecordSale = () => {
               <TextField type="number" fullWidth placeholder="e.g., 2" />
             </Grid>
             <Grid item xs={12} md={6}>
-              <Typography sx={{ fontWeight: 600, mb: 1 }}>Payment Method</Typography>
-               <TextField fullWidth placeholder="e.g., Credit Card" />
-            </Grid>
-            <Grid item xs={12} md={6}>
               <Typography sx={{ fontWeight: 600, mb: 1 }}>Sale Date</Typography>
               <TextField type="date" fullWidth InputLabelProps={{ shrink: true }} defaultValue={new Date().toISOString().split('T')[0]} />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography sx={{ fontWeight: 600, mb: 1 }}>Notes (Optional)</Typography>
-              <TextField multiline rows={3} fullWidth placeholder="e.g., Customer requested extra warranty" />
             </Grid>
           </Grid>
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
-  Box, Typography, TextField, Button, Paper, Checkbox, FormControlLabel, IconButton, InputAdornment, useTheme, CircularProgress
+  Box, Typography, TextField, Button, Paper, Checkbox, FormControlLabel, IconButton, InputAdornment, useTheme
 } from '@mui/material';
 import {
   Mail, Lock, Eye, EyeOff
@@ -9,23 +9,18 @@ import {
 import { motion } from 'framer-motion';
 import InventoryIcon from '@mui/icons-material/Inventory';
 
-const Login = () => {
+const Login = ({ handleLogin }) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const onLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    // Simulate API call and navigate to dashboard
-    setTimeout(() => {
-      setLoading(false);
-      navigate('/dashboard');
-    }, 1000);
+    handleLogin();
+    navigate('/dashboard');
   };
 
   return (
@@ -66,7 +61,7 @@ const Login = () => {
             Sign in to continue managing your inventory.
           </Typography>
 
-          <Box component="form" onSubmit={handleLogin} noValidate>
+          <Box component="form" onSubmit={onLogin} noValidate>
             <TextField
               fullWidth
               label="Email / Username"
@@ -121,11 +116,17 @@ const Login = () => {
               type="submit"
               fullWidth
               variant="contained"
-              disabled={loading}
               sx={{ borderRadius: 3, py: 1.5, textTransform: 'none', fontSize: '1rem' }}
             >
-              {loading ? <CircularProgress size={24} color="inherit" /> : 'Login'}
+              Login
             </Button>
+
+            <Typography variant="body2" sx={{ mt: 2 }}>
+              Don't have an account?{' '}
+              <Link to="/register" style={{ textDecoration: 'none', color: theme.palette.primary.main, fontWeight: 500 }}>
+                Sign Up
+              </Link>
+            </Typography>
           </Box>
         </Paper>
       </motion.div>

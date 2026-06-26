@@ -1,84 +1,59 @@
-
 import { createTheme } from '@mui/material/styles';
 
- const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#2563EB', // Blue for primary actions
+const theme = createTheme({
+    palette: {
+      mode: 'light',
+      background: {
+        default: '#F9FAFB',
+        paper: '#FFFFFF',
+      },
+      primary: {
+        main: '#6366F1',
+      },
+      text: {
+        primary: '#1F2937',
+        secondary: '#6B7280',
+      },
     },
-    secondary: {
-      main: '#4B5563', // A neutral gray for secondary actions
-    },
-    success: {
-        main: '#10B981', // Green for success states
-    },
-    warning: {
-        main: '#F59E0B', // Orange for warnings
-    },
-    error: {
-        main: '#EF4444', // Red for errors and destructive actions
-    },
-    background: {
-      default: '#F3F4F6', // A very subtle gray for the page background
-      paper: '#FFFFFF',
-    },
-    text: {
-        primary: '#1E293B',
-        secondary: '#64748B',
-    }
-  },
-  typography: {
-    fontFamily: 'Inter, sans-serif',
-    h4: { fontWeight: 700, color: '#1E293B' },
-    h5: { fontWeight: 600, color: '#1E293B' },
-    h6: { fontWeight: 600, color: '#1E293B' },
-  },
-  components: {
-    MuiCssBaseline: {
-      styleOverrides: {
-        body: {
-          backgroundColor: '#F3F4F6',
-        }
+    typography: {
+      fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
+      h4: {
+        fontWeight: 700,
+      },
+      h5: {
+        fontWeight: 600,
+      },
+      h6: {
+        fontWeight: 700, 
       }
     },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: '8px',
-          textTransform: 'none',
-          fontWeight: 600,
+    components: {
+      MuiButton: {
+        styleOverrides: {
+          root: {
+            borderRadius: 8,
+            textTransform: 'none',
+            fontWeight: 600,
+          },
         },
-        contained: {
-          boxShadow: 'none',
-          '&:hover': {
-            boxShadow: 'none',
-          }
-        }
-      }
-    },
-    MuiPaper: {
+      },
+       MuiPaper: {
         styleOverrides: {
             root: {
-                boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.05), 0px 1px 2px rgba(0, 0, 0, 0.1)',
+                border: '1px solid #E5E7EB',
+                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
             }
         }
-    },
-    MuiTableHead: {
+       },
+       MuiAppBar: {
         styleOverrides: {
             root: {
-                backgroundColor: '#F9FAFB',
+                boxShadow: 'none',
+                borderBottom: '1px solid #E5E7EB'
             }
         }
+       }
     },
-    MuiTableCell: {
-        styleOverrides: {
-            head: {
-                fontWeight: 'bold',
-                color: '#4B5563',
-            }
-        }
-    },
-  },
-});
+  });
 
-export default theme;
+  export default theme;

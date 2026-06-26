@@ -5,8 +5,6 @@ import {
 import { ArrowLeft, ImageUp, UploadCloud } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const categories = ['Food', 'Drinks', 'Electronics', 'Fashion', 'Pharmacy', 'Stationery', 'Others'];
-
 const AddProduct = () => {
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('sm'));
@@ -39,21 +37,10 @@ const AddProduct = () => {
                 <TextField fullWidth label="Product Name" variant="outlined" required />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="SKU / Barcode" variant="outlined" />
+                <TextField fullWidth label="SKU" variant="outlined" />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth variant="outlined">
-                  <InputLabel>Category (Optional)</InputLabel>
-                  <Select label="Category (Optional)">
-                    {categories.map((cat) => (
-                      <MenuItem key={cat} value={cat}>{cat}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField fullWidth label="Supplier (Optional)" variant="outlined" />
-              </Grid>
+            
+        
               <Grid item xs={12} sm={6}>
                 <TextField fullWidth label="Initial Stock Quantity" type="number" variant="outlined" required />
               </Grid>
