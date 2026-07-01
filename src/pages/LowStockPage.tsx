@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
     Box, Typography, Button, Paper, Grid, Avatar, InputAdornment, TextField,
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip,
@@ -7,6 +7,8 @@ import {
 import { ArrowBack, Search, FilterList, Refresh } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import EmptyState from '../components/EmptyState';
+import RestockDialog from '../components/RestockDialog';
+import { toast } from 'react-hot-toast';
 
 interface LowStockItem {
     id: number;
@@ -32,15 +34,16 @@ const LowStockPage = () => {
     const [error, setError] = useState(false);
     const [items, setItems] = useState<LowStockItem[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<LowStockItem | null>(null);
 
-    // Simulate loading and fetching data
-    useState(() => {
+    useEffect(() => {
         const timer = setTimeout(() => {
             setItems(mockLowStockItems);
             setLoading(false);
         }, 1500);
         return () => clearTimeout(timer);
-    });
+    }, []);
 
     const handleRetry = () => {
         setLoading(true);
@@ -49,6 +52,25 @@ const LowStockPage = () => {
             setItems(mockLowStockItems);
             setLoading(false);
         }, 1500);
+    };
+
+    const handleOpenDialog = (item: LowStockItem) => {
+        setSelectedItem(item);
+        setDialogOpen(true);
+    };
+
+    const handleCloseDialog = () => {
+        setDialogOpen(false);
+        setSelectedItem(null);
+    };
+
+    const handleRestock = (productId: number, newQuantity: number) => {
+        setItems(prevItems =>
+            prevItems.map(item =>
+                item.id === productId ? { ...item, stock: newQuantity, lastUpdated: new Date().toISOString().split('T')[0] } : item
+            )
+        );
+        toast.success(`${selectedItem?.name} has been restocked.`);
     };
 
     const filteredItems = useMemo(() => {
@@ -120,7 +142,7 @@ const LowStockPage = () => {
                 <TableCell>{item.reorderLevel}</TableCell>
                 <TableCell>{item.lastUpdated}</TableCell>
                 <TableCell>
-                    <Button variant="contained" size="small">Restock</Button>
+                    <Button variant="contained" size="small" onClick={() => handleOpenDialog(item)}>Restock</Button>
                 </TableCell>
             </TableRow>
         ));
@@ -190,6 +212,13 @@ const LowStockPage = () => {
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
                 <Pagination count={10} color="primary" />
             </Box>
+            
+            <RestockDialog
+                open={dialogOpen}
+                onClose={handleCloseDialog}
+                product={selectedItem}
+                onRestock={handleRestock}
+            />
         </Box>
     );
 };

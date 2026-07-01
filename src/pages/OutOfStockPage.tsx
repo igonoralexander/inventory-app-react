@@ -7,6 +7,8 @@ import {
 import { ArrowBack, Search, FilterList, Refresh } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import EmptyState from '../components/EmptyState';
+import RestockDialog from '../components/RestockDialog';
+import { toast } from 'react-hot-toast';
 
 interface OutOfStockItem {
     id: number;
@@ -31,6 +33,8 @@ const OutOfStockPage = () => {
     const [error, setError] = useState(false);
     const [items, setItems] = useState<OutOfStockItem[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<OutOfStockItem | null>(null);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -47,6 +51,25 @@ const OutOfStockPage = () => {
             setItems(mockOutOfStockItems);
             setLoading(false);
         }, 1500);
+    };
+
+    const handleOpenDialog = (item: OutOfStockItem) => {
+        setSelectedItem(item);
+        setDialogOpen(true);
+    };
+
+    const handleCloseDialog = () => {
+        setDialogOpen(false);
+        setSelectedItem(null);
+    };
+
+    const handleRestock = (productId: number, newQuantity: number) => {
+        setItems(prevItems =>
+            prevItems.map(item =>
+                item.id === productId ? { ...item, stock: newQuantity, lastUpdated: new Date().toISOString().split('T')[0] } : item
+            ).filter(item => item.stock > 0) // Optionally remove from this list if restocked
+        );
+        toast.success(`${selectedItem?.name} has been restocked.`);
     };
 
     const filteredItems = useMemo(() => {
@@ -117,7 +140,7 @@ const OutOfStockPage = () => {
                 <TableCell>{item.reorderLevel}</TableCell>
                 <TableCell>{item.lastUpdated}</TableCell>
                 <TableCell>
-                    <Button variant="contained" size="small">Restock</Button>
+                    <Button variant="contained" size="small" onClick={() => handleOpenDialog(item)}>Restock</Button>
                 </TableCell>
             </TableRow>
         ));
@@ -187,6 +210,13 @@ const OutOfStockPage = () => {
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
                 <Pagination count={10} color="primary" />
             </Box>
+
+            <RestockDialog
+                open={dialogOpen}
+                onClose={handleCloseDialog}
+                product={selectedItem}
+                onRestock={handleRestock}
+            />
         </Box>
     );
 };
