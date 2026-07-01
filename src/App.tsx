@@ -22,6 +22,7 @@ const Sales = lazy(() => import('./pages/Sales'));
 const More = lazy(() => import('./pages/More'));
 const LowStockPage = lazy(() => import('./pages/LowStockPage'));
 const OutOfStockPage = lazy(() => import('./pages/OutOfStockPage'));
+const StockOverviewPage = lazy(() => import('./pages/StockOverviewPage'));
 
 const AnimatedOutlet = () => {
     const o = useLocation();
@@ -120,6 +121,7 @@ const App = () => {
                           <Route path="/inventory" element={<Inventory />} />
                           <Route path="/inventory/low-stock" element={<LowStockPage />} />
                           <Route path="/inventory/out-of-stock" element={<OutOfStockPage />} />
+                          <Route path="/inventory/in-stock" element={<StockOverviewPage />} />
                           <Route path="/productlist" element={<ProductList />} />
                           <Route path="/products" element={<Products />} />
                           <Route path="/sales" element={<Sales />} />
