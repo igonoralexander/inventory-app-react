@@ -19,6 +19,8 @@ import {
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import ProductForm from '../components/products/ProductForm';
+import RestockDialog from '../components/RestockDialog';
+import { toast } from 'react-hot-toast';
 
 
 // MOCK DATA
@@ -29,12 +31,12 @@ const summaryData = [
     { title: 'Low Stock Items', value: '45', icon: AlertTriangle, color: '#f97316', path: '/inventory/low-stock', tooltip: 'View items with low stock' },
     { title: 'Out of Stock Items', value: '12', icon: XCircle, color: '#dc2626', path: '/inventory/out-of-stock', tooltip: 'View out-of-stock items' },
 ];
-const lowStockItems = [
-    { id: 1, name: 'Espresso Machine', image: '', currentQty: 8, minQty: 10 },
-    { id: 2, name: 'Mechanical Keyboard', image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=2670&auto=format&fit=crop', currentQty: 5, minQty: 10 },
-    { id: 3, name: 'Designer Sneakers', image: '', currentQty: 3, minQty: 5 },
-    { id: 4, name: 'Webcam Pro', image: 'https://images.unsplash.com/photo-1609346938925-6d9b9d2be8a8?q=80&w=2670&auto=format&fit=crop', currentQty: 12, minQty: 15 },
-    { id: 5, name: 'Organic Bananas', image: 'https://images.unsplash.com/photo-1571771894824-269f85b83969?q=80&w=2670&auto=format&fit=crop', currentQty: 50, minQty: 100 },
+const initialLowStockItems = [
+    { id: 1, name: 'Espresso Machine', image: '', currentQty: 8, minQty: 10, stock: 8 },
+    { id: 2, name: 'Mechanical Keyboard', image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?q=80&w=2670&auto=format&fit=crop', currentQty: 5, minQty: 10, stock: 5 },
+    { id: 3, name: 'Designer Sneakers', image: '', currentQty: 3, minQty: 5, stock: 3 },
+    { id: 4, name: 'Webcam Pro', image: 'https://images.unsplash.com/photo-1609346938925-6d9b9d2be8a8?q=80&w=2670&auto=format&fit=crop', currentQty: 12, minQty: 15, stock: 12 },
+    { id: 5, name: 'Organic Bananas', image: 'https://images.unsplash.com/photo-1571771894824-269f85b83969?q=80&w=2670&auto=format&fit=crop', currentQty: 50, minQty: 100, stock: 50 },
 ];
 const recentSales = [
   { id: 1, time: '2m ago', productName: 'Espresso Machine', qty: 1 },
@@ -111,6 +113,10 @@ const QuickActionButton = ({ icon, text, onClick, tooltip }) => {
 const Dashboard = () => {
     const navigate = useNavigate();
     const [formOpen, setFormOpen] = useState(false);
+    const [lowStockItems, setLowStockItems] = useState(initialLowStockItems);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+
     const FADE_IN_VARIANTS = {
         hidden: { opacity: 0, y: 10 },
         visible: i => ({ opacity: 1, y: 0, transition: { delay: i * 0.05, duration: 0.3, ease: 'easeOut' }})
@@ -120,6 +126,25 @@ const Dashboard = () => {
         console.log('New Product:', product);
         setFormOpen(false);
     }
+
+    const handleOpenDialog = (item) => {
+        setSelectedItem(item);
+        setDialogOpen(true);
+    };
+
+    const handleCloseDialog = () => {
+        setDialogOpen(false);
+        setSelectedItem(null);
+    };
+
+    const handleRestock = (productId, newQuantity) => {
+        setLowStockItems(prevItems =>
+            prevItems.map(item =>
+                item.id === productId ? { ...item, stock: newQuantity, currentQty: newQuantity } : item
+            )
+        );
+        toast.success(`${selectedItem?.name} has been restocked.`);
+    };
 
     return (
         <Box sx={{ p: { xs: 2, md: 3 } }}>
@@ -170,7 +195,7 @@ const Dashboard = () => {
                                         Qty: <Typography component="span" sx={{color: 'warning.main', fontWeight: 'bold'}}>{item.currentQty}</Typography> / {item.minQty}
                                     </Typography>
                                 </Box>
-                                 <Button variant="contained" size="small" sx={{borderRadius: 2, textTransform: 'none', boxShadow: 'none'}}>Restock</Button>
+                                 <Button variant="contained" size="small" sx={{borderRadius: 2, textTransform: 'none', boxShadow: 'none'}} onClick={() => handleOpenDialog(item)}>Restock</Button>
                             </Box>
                             ))}
                         </Card>
@@ -251,6 +276,13 @@ const Dashboard = () => {
                 handleClose={() => setFormOpen(false)}
                 handleSubmit={handleAddProduct}
                 product={null}
+            />
+
+            <RestockDialog
+                open={dialogOpen}
+                onClose={handleCloseDialog}
+                product={selectedItem}
+                onRestock={handleRestock}
             />
 
         </Box>
