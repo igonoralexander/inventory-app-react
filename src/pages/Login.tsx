@@ -107,9 +107,9 @@ const Login = ({ handleLogin }) => {
                 control={<Checkbox checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} name="rememberMe" color="primary" />}
                 label={<Typography variant="body2">Remember Me</Typography>}
               />
-              <Typography variant="body2" color="primary" component="a" href="#" sx={{ textDecoration: 'none', fontWeight: 500 }}>
+              <Link to="/forgot-password" style={{ textDecoration: 'none', color: theme.palette.primary.main, fontWeight: 500 }}>
                 Forgot Password?
-              </Typography>
+              </Link>
             </Box>
 
             <Button

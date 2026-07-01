@@ -9,6 +9,7 @@ import Header from './components/Header';
 const Splash = lazy(() => import('./pages/SplashScreen'));
 const Login = lazy(() => import('./pages/Login'));
 const Registration = lazy(() => import('./pages/Registration'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword')); // Add this line
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Inventory = lazy(() => import('./pages/Inventory'));
 const ProductList = lazy(() => import('./pages/ProductList'));
@@ -107,6 +108,7 @@ const App = () => {
                   <Routes>
                       <Route path="/login" element={!isLoggedIn ? <Login handleLogin={handleLogin} /> : <Navigate to="/dashboard" />} />
                       <Route path="/register" element={!isLoggedIn ? <Registration /> : <Navigate to="/dashboard" />} />
+                      <Route path="/forgot-password" element={<ForgotPassword />} />
                       <Route 
                           element={
                               isLoggedIn ? (
