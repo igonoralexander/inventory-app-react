@@ -23,11 +23,11 @@ import ProductForm from '../components/products/ProductForm';
 
 // MOCK DATA
 const summaryData = [
-    { title: 'Total Products', value: '890', icon: BoxIcon, color: '#6366f1', path: '/products' },
-    { title: 'Total Sales', value: '$12,450', icon: DollarSign, color: '#10b981', path: '/sales' },
-    { title: 'Products In Stock', value: '750', icon: Archive, color: '#0ea5e9', path: '/inventory' },
-    { title: 'Low Stock Items', value: '45', icon: AlertTriangle, color: '#f97316', path: '/inventory/low-stock' },
-    { title: 'Out of Stock Items', value: '12', icon: XCircle, color: '#dc2626', path: '/inventory/out-of-stock' },
+    { title: 'Total Products', value: '890', icon: BoxIcon, color: '#6366f1', path: '/products', tooltip: 'View all products' },
+    { title: 'Total Sales', value: '$12,450', icon: DollarSign, color: '#10b981', path: '/sales', tooltip: 'View sales analytics' },
+    { title: 'Products In Stock', value: '750', icon: Archive, color: '#0ea5e9', path: '/inventory', tooltip: 'View products in stock' },
+    { title: 'Low Stock Items', value: '45', icon: AlertTriangle, color: '#f97316', path: '/inventory/low-stock', tooltip: 'View items with low stock' },
+    { title: 'Out of Stock Items', value: '12', icon: XCircle, color: '#dc2626', path: '/inventory/out-of-stock', tooltip: 'View out-of-stock items' },
 ];
 const lowStockItems = [
     { id: 1, name: 'Espresso Machine', image: '', currentQty: 8, minQty: 10 },
@@ -71,24 +71,26 @@ const SummaryCard = ({ item }) => {
     const navigate = useNavigate();
     const Icon = item.icon;
     return (
-        <motion.div
-            onClick={() => navigate(item.path)}
-            style={{ height: '100%', cursor: 'pointer' }}
-        >
-            <Card>
-                <Box sx={{ width: 40, height: 40, borderRadius: '50%', display: 'grid', placeItems: 'center', bgcolor: `${item.color}20`, mb: 1.5 }}>
-                    <Icon size={24} color={item.color} />
-                </Box>
-                <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 0.5 }}>{item.value}</Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>{item.title}</Typography>
-                {item.change && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', color: item.changeType === 'increase' ? 'success.main' : 'error.main', mt: 'auto' }}>
-                        <TrendingUp size={14} />
-                        <Typography variant="caption" sx={{ fontWeight: 600, ml: 0.5 }}>{item.change}</Typography>
+        <Tooltip title={item.tooltip} arrow>
+            <motion.div
+                onClick={() => navigate(item.path)}
+                style={{ height: '100%', cursor: 'pointer' }}
+            >
+                <Card>
+                    <Box sx={{ width: 40, height: 40, borderRadius: '50%', display: 'grid', placeItems: 'center', bgcolor: `${item.color}20`, mb: 1.5 }}>
+                        <Icon size={24} color={item.color} />
                     </Box>
-                )}
-            </Card>
-        </motion.div>
+                    <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 0.5 }}>{item.value}</Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>{item.title}</Typography>
+                    {item.change && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', color: item.changeType === 'increase' ? 'success.main' : 'error.main', mt: 'auto' }}>
+                            <TrendingUp size={14} />
+                            <Typography variant="caption" sx={{ fontWeight: 600, ml: 0.5 }}>{item.change}</Typography>
+                        </Box>
+                    )}
+                </Card>
+            </motion.div>
+        </Tooltip>
     );
 };
 
