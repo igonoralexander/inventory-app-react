@@ -25,7 +25,7 @@ import ProductForm from '../components/products/ProductForm';
 const summaryData = [
     { title: 'Total Products', value: '890', icon: BoxIcon, color: '#6366f1', path: '/products', tooltip: 'View all products' },
     { title: 'Total Sales', value: '$12,450', icon: DollarSign, color: '#10b981', path: '/sales', tooltip: 'View sales analytics' },
-    { title: 'Products In Stock', value: '750', icon: Archive, color: '#0ea5e9', path: '/inventory', tooltip: 'View products in stock' },
+    { title: 'Products In Stock', value: '750', icon: Archive, color: '#0ea5e9', path: '/inventory/in-stock', tooltip: 'View products in stock' },
     { title: 'Low Stock Items', value: '45', icon: AlertTriangle, color: '#f97316', path: '/inventory/low-stock', tooltip: 'View items with low stock' },
     { title: 'Out of Stock Items', value: '12', icon: XCircle, color: '#dc2626', path: '/inventory/out-of-stock', tooltip: 'View out-of-stock items' },
 ];
